@@ -1,4 +1,4 @@
-# BitbucketDiffTree
+# Bitbucket Diff Tree
 # What is this repository for?
 
 - Create a chrome extension that allow showing diff as tree structure in a PR of bitbucket.
