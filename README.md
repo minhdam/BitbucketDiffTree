@@ -2,9 +2,10 @@
 
 Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree back from Bitbucket Server to Bitbucket Cloud. 
 
+![BitbucketDiffTree on GitHub](dist/screenshot_1280x800.png)
+
 ## Version History
 ### v1.0.5:
--------
 * Support showing code changes as a tree structure in the following pages: 
     - Branches
     - Create pull request
@@ -12,11 +13,9 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 * Allow enable diff tree extension permanently
 
 ### v1.0.6:
--------
 * Allow collapse/expand the diff tree region
 
 ### v1.0.7:
--------
 * Navigate to corresponding comment when clicking on the "new comment notification" area at the bottom right corner
 * Display diff tree when the viewer selects "ignore whitespace"
 
