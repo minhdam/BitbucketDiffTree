@@ -27,10 +27,10 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 - Open Chrome browser and access chrome extensions by chrome://extensions/
 - Make sure the __Developer mode__ checkbox is checked
 - Click on __Load unpacked extension...__ and point to the __src__ folder of this repo
-- Finish! You will see an __B__ icon added to the extension areas
+- Finish! You will see an __B__ icon added to the extension area
 
 ## How to run the extension on local
 
-- Open a bitbucket pull request page
+- Open a pull request page on bitbucket
 - Click on __B__ icon to activate the diff tree extension
 - Enjoy!
