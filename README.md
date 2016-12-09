@@ -8,7 +8,7 @@
 
 - Open Chrome and access chrome extensions by chrome://extensions/
 - Make sure the Developer mode checkbox is checked
-- Click Loan unpacked extension... and point to the Source folder of this repo
+- Click on "Load unpacked extension..." and point to the "Source" folder of this repo
 - Finish! You will see an "B" icon added to the extension areas
 
 # How to run the extension
