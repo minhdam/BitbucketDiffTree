@@ -1,7 +1,7 @@
 ﻿(function () {
 	'use strict';
 
-	BDT.DomObservers.FileChangesObserver = function () {
+	var FileChangesObserver = function () {
 		var _this = this;
 
 		_this.observer = null;
@@ -47,4 +47,7 @@
 		_this.startObserving = startObserving;
 		_this.stopObserving = stopObserving;
 	};
+
+	BDT.DomObservers.FileChangesObserver = FileChangesObserver;
+
 })();

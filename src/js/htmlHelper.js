@@ -1,21 +1,22 @@
 ﻿(function() {
 	'use strict';
 
-	BDT.Helpers.HtmlHelper = {
+	var HtmlHelper = {
 
 		buildTreeHtml: function(treeObject) {
-			var keys = Object.keys(treeObject)
+			var childItems = Object.keys(treeObject)
 				.filter(function(item) {
 					return item !== "data";
 				});
 
-			if (keys.length === 0) {
+			if (childItems.length === 0) {
 				return '';
 			}
 
 			var treeHtml = '<ul>';
-			keys.forEach(function(key, index) {
-				var data = treeObject[key].data;
+
+			childItems.forEach(function(childItem, index) {
+				var data = treeObject[childItem].data;
 				var className = '';
 				var content;
 
@@ -23,30 +24,25 @@
 					className += 'isLeaf ';
 				}
 
-				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + key + '">';
+				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + childItem + '">';
 				if (data.isLeaf) {
 					content =
-						BDT.Helpers.HtmlHelper.buildFileIconHtml() +
-						'&nbsp;' +
-						BDT.Helpers.HtmlHelper.buildLozengeFileStatusHtml(data.fileStatus) +
-						'&nbsp;' +
-						key +
-						'&nbsp' +
-						BDT.Helpers.HtmlHelper.buildCommentCountBadgeHtml(data.commentCount);
+						HtmlHelper.buildFileIconHtml() + '&nbsp;' +
+						HtmlHelper.buildLozengeFileStatusHtml(data.fileStatus) + '&nbsp;' +
+						childItem + '&nbsp' +
+						HtmlHelper.buildCommentCountBadgeHtml(data.commentCount);
 
-					treeHtml += '<a href="#" title="' + key + '">' + content + '</a>';
-				}
-				else {
+					treeHtml += '<a href="#" title="' + childItem + '">' + content + '</a>';
+				} else {
 					content =
-						BDT.Helpers.HtmlHelper.buildFolderOpenIconHtml() +
-						'&nbsp;' +
-						key;
+						HtmlHelper.buildFolderOpenIconHtml() + '&nbsp;' +
+						childItem;
 
-					treeHtml += '<a href="#" title="' + key + '">' + content + '</a>';
+					treeHtml += '<a href="#" title="' + childItem + '">' + content + '</a>';
 				}
 
 				// Build child nodes recursively
-				treeHtml += BDT.Helpers.HtmlHelper.buildTreeHtml(treeObject[key]);
+				treeHtml += HtmlHelper.buildTreeHtml(treeObject[childItem]);
 
 				treeHtml += '</li>';
 			});
@@ -113,4 +109,7 @@
 			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-folder-closed" style="color:#0075B1;">Folder closed</span>';
 		}
 	};
+
+	BDT.Helpers.HtmlHelper = HtmlHelper;
+	
 })();

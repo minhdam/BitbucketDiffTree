@@ -194,33 +194,44 @@
 	function populateDiffTreeObject() {
 		var treeObject = {};
 
-		_$commitFilesSummary.find('li.iterable-item')
+		_$commitFilesSummary
+			.find('li.iterable-item')
 			.each(function() {
 				var $self = $(this);
 				var fileName = $self.data('file-identifier');
 				var link = $self.find('a').attr('href');
-				var parts = fileName.split('/');
+				var folders = fileName.split('/');
+				var maxLevel = folders.length;
 				var tempObject = treeObject;
+				var parentObject = null;
 
-				parts.forEach(function(part, index) {
-					if (!tempObject[part]) {
-						tempObject[part] = {
+				folders.forEach(function(folder, index) {
+					var item = tempObject[folder];
+
+					if (!item) {
+						item = tempObject[folder] = {
 							data: {
 								isLeaf: false,
-								link: ''
+								link: '',
+								childrenCount: 0
 							}
 						};
+
+						if (parentObject !== null) {
+							parentObject.data.childrenCount++;
+						}
 					}
 
 					// Leaf node which contains file name
-					if (index === parts.length - 1) {
-						tempObject[part].data.isLeaf = true;
-						tempObject[part].data.link = link;
-						tempObject[part].data.fileStatus = getFileStatus($self);
-						tempObject[part].data.commentCount = getFileCommentCount($self);
+					if (index === maxLevel - 1) {
+						item.data.isLeaf = true;
+						item.data.link = link;
+						item.data.fileStatus = getFileStatus($self);
+						item.data.commentCount = getFileCommentCount($self);
 					}
 
-					tempObject = tempObject[part];
+					parentObject = item;
+					tempObject = tempObject[folder];
 				});
 			});
 

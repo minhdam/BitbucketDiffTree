@@ -1,7 +1,7 @@
 ﻿(function () {
 	'use strict';
 
-	BDT.DomObservers.NewCommentObserver = function () {
+	var NewCommentObserver = function () {
 		var _this = this;
 
 		_this.observer = null;
@@ -56,4 +56,7 @@
 		_this.startObserving = startObserving;
 		_this.stopObserving = stopObserving;
 	};
+
+	BDT.DomObservers.NewCommentObserver = NewCommentObserver;
+
 })();
