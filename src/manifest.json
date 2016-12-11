@@ -25,9 +25,10 @@
 				"libs/jquery.min.js",
 				"libs/jstree/jstree.min.js",
 				"js/namespaces.js",
-				"js/htmlHelper.js",
-				"js/newCommentObserver.js",
-				"js/fileChangesObserver.js",
+				"js/models/treeNodeModel.js",
+				"js/helpers/htmlHelper.js",
+				"js/observers/newCommentObserver.js",
+				"js/observers/fileChangesObserver.js",
 				"js/content.js"
 			],
 

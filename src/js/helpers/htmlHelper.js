@@ -3,8 +3,8 @@
 
 	var HtmlHelper = {
 
-		buildTreeHtml: function(treeObject) {
-			var childItems = Object.keys(treeObject)
+		buildTreeHtml: function(treeNodeObject) {
+			var childItems = Object.keys(treeNodeObject.childrens)
 				.filter(function(item) {
 					return item !== "data";
 				});
@@ -16,7 +16,7 @@
 			var treeHtml = '<ul>';
 
 			childItems.forEach(function(childItem, index) {
-				var data = treeObject[childItem].data;
+				var data = treeNodeObject.childrens[childItem].data;
 				var className = '';
 				var content;
 
@@ -42,7 +42,7 @@
 				}
 
 				// Build child nodes recursively
-				treeHtml += HtmlHelper.buildTreeHtml(treeObject[childItem]);
+				treeHtml += HtmlHelper.buildTreeHtml(treeNodeObject.childrens[childItem]);
 
 				treeHtml += '</li>';
 			});

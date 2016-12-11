@@ -1,4 +1,4 @@
-(function (HtmlHelper, NewCommentObserver, FileChangesObserver) {
+(function (TreeNodeModel, HtmlHelper, NewCommentObserver, FileChangesObserver) {
 	'use strict';
 
 	// Declare variables
@@ -192,7 +192,7 @@
 	}
 
 	function populateDiffTreeObject() {
-		var treeObject = {};
+		var treeObject = new TreeNodeModel();
 
 		_$commitFilesSummary
 			.find('li.iterable-item')
@@ -203,22 +203,17 @@
 				var folders = fileName.split('/');
 				var maxLevel = folders.length;
 				var tempObject = treeObject;
-				var parentObject = null;
 
 				folders.forEach(function(folder, index) {
-					var item = tempObject[folder];
+					var item = tempObject.childrens[folder];
 
 					if (!item) {
-						item = tempObject[folder] = {
-							data: {
-								isLeaf: false,
-								link: '',
-								childrenCount: 0
-							}
-						};
+						item = tempObject.childrens[folder] = new TreeNodeModel();
 
-						if (parentObject !== null) {
-							parentObject.data.childrenCount++;
+						if (index === maxLevel - 1) {
+							tempObject.data.fileCount++;
+						} else {
+							tempObject.data.folderCount++;
 						}
 					}
 
@@ -230,10 +225,12 @@
 						item.data.commentCount = getFileCommentCount($self);
 					}
 
-					parentObject = item;
-					tempObject = tempObject[folder];
+					//parentObject = item;
+					tempObject = tempObject.childrens[folder];
 				});
 			});
+		
+		//console.log(treeObject);
 
 		return treeObject;
 	}
@@ -371,6 +368,7 @@
 	}
 
 })(
+	BDT.Models.TreeNodeModel,
 	BDT.Helpers.HtmlHelper,
 	BDT.DomObservers.NewCommentObserver,
 	BDT.DomObservers.FileChangesObserver);
