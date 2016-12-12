@@ -48,6 +48,7 @@
 		_this.stopObserving = stopObserving;
 	};
 
+	// Export via namespace
 	BDT.DomObservers.FileChangesObserver = FileChangesObserver;
 
 })();

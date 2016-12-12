@@ -188,12 +188,14 @@
 
 	function buildDiffTree() {
 		var treeObject = populateDiffTreeObject();
-		buildDiffTreeHtml(treeObject);
+		var compactTreeObject = compactEmptyFoldersDiffTreeObject(treeObject);
+		buildDiffTreeHtml(compactTreeObject);
+		
 		initializeTree();
 	}
 
 	function populateDiffTreeObject() {
-		var treeObject = new TreeNodeModel();
+		var treeObject = new TreeNodeModel('root', 0);
 
 		_$commitFilesSummary
 			.find('li.iterable-item')
@@ -206,10 +208,10 @@
 				var tempObject = treeObject;
 
 				folders.forEach(function(folder, index) {
-					var item = tempObject.childrens[folder];
+					var item = tempObject.children[folder];
 
 					if (!item) {
-						item = tempObject.childrens[folder] = new TreeNodeModel();
+						item = tempObject.children[folder] = new TreeNodeModel(folder, index + 1);
 
 						if (index === maxLevel - 1) {
 							tempObject.data.fileCount++;
@@ -226,14 +228,52 @@
 						item.data.commentCount = getFileCommentCount($self);
 					}
 
-					//parentObject = item;
-					tempObject = tempObject.childrens[folder];
+					tempObject = tempObject.children[folder];
 				});
 			});
 		
 		//console.log(treeObject);
 
 		return treeObject;
+	}
+
+	function compactEmptyFoldersDiffTreeObject(treeObject) {
+		var compactTreeObject = treeObject.cloneDataOnly();
+		compactTreeObject = compactEmptyFoldersRecursive(treeObject);
+		//console.log(compactTreeObject);
+
+		return compactTreeObject;
+	}
+
+	function compactEmptyFoldersRecursive(treeNode) {
+		var treeNodeResult = treeNode.cloneDataOnly();
+		var parentNode = treeNode;
+
+		if (treeNode.data.isLeaf) {
+			return treeNodeResult;
+		}
+
+		if (treeNode.isRoot() === false &&
+			treeNode.data.folderCount === 1 && 
+			treeNode.data.fileCount === 0) {
+
+			var compactNodeName = parentNode.data.name;
+
+			while (parentNode.data.folderCount === 1 && parentNode.data.fileCount === 0) {
+				var firstFolderObject = parentNode.getChildByIndex(0);
+				compactNodeName += '/' + firstFolderObject.data.name;
+				parentNode = firstFolderObject;
+			}
+
+			treeNodeResult.data.name = compactNodeName;
+		}
+
+		var children = parentNode.getChildrenAsArray();
+		children.forEach(function(child, index) {
+			treeNodeResult.children[child.data.name] = compactEmptyFoldersRecursive(child);
+		});
+
+		return treeNodeResult;
 	}
 
 	function buildDiffTreeHtml(treeObject) {

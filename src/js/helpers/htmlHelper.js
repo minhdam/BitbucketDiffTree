@@ -4,10 +4,7 @@
 	var HtmlHelper = {
 
 		buildTreeHtml: function(treeNodeObject) {
-			var childItems = Object.keys(treeNodeObject.childrens)
-				.filter(function(item) {
-					return item !== "data";
-				});
+			var childItems = treeNodeObject.getChildrenAsArray();
 
 			if (childItems.length === 0) {
 				return '';
@@ -16,7 +13,7 @@
 			var treeHtml = '<ul>';
 
 			childItems.forEach(function(childItem, index) {
-				var data = treeNodeObject.childrens[childItem].data;
+				var data = childItem.data;
 				var className = '';
 				var content;
 
@@ -24,25 +21,25 @@
 					className += 'isLeaf ';
 				}
 
-				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + childItem + '">';
+				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + data.name + '">';
 				if (data.isLeaf) {
 					content =
 						HtmlHelper.buildFileIconHtml() + '&nbsp;' +
 						HtmlHelper.buildLozengeFileStatusHtml(data.fileStatus) + '&nbsp;' +
-						childItem + '&nbsp' +
+						data.name + '&nbsp' +
 						HtmlHelper.buildCommentCountBadgeHtml(data.commentCount);
 
-					treeHtml += '<a href="#" title="' + childItem + '">' + content + '</a>';
+					treeHtml += '<a href="#" title="' + data.name + '">' + content + '</a>';
 				} else {
 					content =
 						HtmlHelper.buildFolderOpenIconHtml() + '&nbsp;' +
-						childItem;
+						data.name;
 
-					treeHtml += '<a href="#" title="' + childItem + '">' + content + '</a>';
+					treeHtml += '<a href="#" title="' + data.name + '">' + content + '</a>';
 				}
 
 				// Build child nodes recursively
-				treeHtml += HtmlHelper.buildTreeHtml(treeNodeObject.childrens[childItem]);
+				treeHtml += HtmlHelper.buildTreeHtml(childItem);
 
 				treeHtml += '</li>';
 			});
@@ -110,6 +107,7 @@
 		}
 	};
 
+	// Export via namespace
 	BDT.Helpers.HtmlHelper = HtmlHelper;
 	
 })();

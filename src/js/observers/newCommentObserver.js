@@ -57,6 +57,7 @@
 		_this.stopObserving = stopObserving;
 	};
 
+	// Export via namespace
 	BDT.DomObservers.NewCommentObserver = NewCommentObserver;
 
 })();
