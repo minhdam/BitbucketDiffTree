@@ -47,7 +47,7 @@
 	});
 
 	function init() {
-		_$pullRequestDiff = $('#pullrequest-diff, #diff, #compare-diff-content');
+		_$pullRequestDiff = $('#pullrequest-diff, #diff, #compare-diff-content, #commit');
 		_$pullRequestDiffCompare = _$pullRequestDiff.find('> #compare, > #changeset-diff.main');
 		_$commitFilesSummary = _$pullRequestDiff.find('ul.commit-files-summary');
 		_$diffSections = _$pullRequestDiff.find('section.iterable-item.bb-udiff');
@@ -56,7 +56,8 @@
 	function canApplyDiffTree() {
 		return $('.diff').length > 0 // for pull request page
 			|| $('#compare-content').length > 0 // for create pull request page
-			|| $('#compare-tabs').length > 0; // for view branch page
+			|| $('#compare-tabs').length > 0 // for view branch page
+			|| $('#commit').length > 0; // for commit page
 	}
 
 	function tryToLoadDiffTreeTool() {
