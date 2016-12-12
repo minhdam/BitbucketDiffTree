@@ -68,15 +68,32 @@
 #diffTreeContainer .dt-actions {
 	height: 40px;
 	border-bottom: 1px solid #ccc;
+}
+
+#diffTreeContainer .dt-actions .dt-action-group {
+	border-left: 1px solid #ccc;
 	padding: 0 5px;
+	display: inline-block;
+	float: right;
+}
+
+#diffTreeContainer .dt-actions .dt-action-group:last-child {
+	border-left: none;
 }
 
 #diffTreeContainer .dt-actions .dt-action-item {
-	float: right;
-	display: inline-block;
 	width: 20px;
 	line-height: 40px;
-	color: #aaa;
+	color: #707070;
+}
+
+#diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item {
+	
+}
+
+#diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item .aui-icon:before {
+	font-size: 14px;
+	font-weight: bold;
 }
 
 #diffTreeContainer .dt-actions .dt-action-item .aui-icon:before {

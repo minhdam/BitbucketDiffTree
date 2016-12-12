@@ -1,4 +1,9 @@
-(function (TreeNodeModel, HtmlHelper, NewCommentObserver, FileChangesObserver) {
+(function (
+	TreeNodeModel, 
+	HtmlHelper, 
+	NewCommentObserver, 
+	FileChangesObserver) {
+
 	'use strict';
 
 	// Declare variables
@@ -16,6 +21,8 @@
 
 	var _interval;
 
+	var _treeObject;
+
 	// Get the settings
 	var _settings = {};
 	chrome.storage.sync.get(null, function(settings) {
@@ -32,7 +39,7 @@
 			switch (msg.action) {
 				case 'enableDiffTree':
 					enableDiffTree();
-					break;;
+					break;
 				case 'disableDiffTree':
 					disableDiffTree();
 					break;
@@ -95,12 +102,7 @@
 			_$commitFilesSummary.hide();
 			_$diffSections.hide();
 
-			buildDiffTree();
-
-			bindDiffTreeEvents();
-			bindJsTreeEvents();
-
-			showFirstFile();
+			buildDiffTree(_settings.useCompactMode);
 		}
 
 		if (!isOnLoad) {
@@ -131,24 +133,45 @@
 	}
 
 	function bindDiffTreeEvents() {
-		_$diffTreeContainer.on('click',
-			'#btnRemoveDiffTree',
-			function(e) {
-				e.preventDefault();
-				disableDiffTree();
-			});
+		_$diffTreeContainer.on('click', '#btnRemoveDiffTree', function(e) {
+			e.preventDefault();
 
-		_$diffTreeContainer.on('click',
-			'#btnCollapseExpandDiffTree',
-			function(e) {
-				e.preventDefault();
+			disableDiffTree();
+		});
 
-				_$diffTreeContainer.toggleClass('expanded collapsed');
-				_$pullRequestDiffCompare.toggleClass('expanded collapsed');
-				$('#btnCollapseExpandDiffTree')
-					.find('span.aui-icon')
-					.toggleClass('aui-iconfont-arrows-left aui-iconfont-arrows-right');
-			});
+		_$diffTreeContainer.on('click', '#btnCollapseExpandDiffTree', function(e) {
+			e.preventDefault();
+
+			_$diffTreeContainer.toggleClass('expanded collapsed');
+			_$pullRequestDiffCompare.toggleClass('expanded collapsed');
+
+			$('#btnCollapseExpandDiffTree')
+				.find('span.aui-icon')
+				.toggleClass('aui-iconfont-arrows-left aui-iconfont-arrows-right');
+		});
+
+		_$diffTreeContainer.on('click', '#btnCompactEmptyFoldersToggle', function(e) {
+			e.preventDefault();
+
+			var useCompactMode = _settings.useCompactMode || false;
+			useCompactMode = !useCompactMode;
+
+			buildDiffTree(useCompactMode);
+			saveCompactModeSetting(useCompactMode);
+
+			var title = useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders';
+
+			$('#btnCompactEmptyFoldersToggle')
+				.find('span.aui-icon')
+				.toggleClass('aui-iconfont-unfocus aui-iconfont-focus')
+				.attr('title', title);
+		});
+	}
+
+	function saveCompactModeSetting(useCompactMode) {
+		chrome.storage.sync.set({ useCompactMode: useCompactMode }, function() {
+			_settings.useCompactMode = useCompactMode;
+		});
 	}
 
 	function bindJsTreeEvents() {
@@ -186,12 +209,19 @@
 			});
 	}
 
-	function buildDiffTree() {
-		var treeObject = populateDiffTreeObject();
-		var compactTreeObject = compactEmptyFoldersDiffTreeObject(treeObject);
-		buildDiffTreeHtml(compactTreeObject);
+	function buildDiffTree(isCompactMode) {
+		isCompactMode = isCompactMode || false;
+
+		_treeObject = populateDiffTreeObject();
+		if (isCompactMode) {
+			_treeObject = compactEmptyFoldersDiffTreeObject(_treeObject);
+		}
 		
-		initializeTree();
+		attachDiffTreeHtml(_treeObject);
+		initializeJsTree();
+		bindJsTreeEvents();
+		bindDiffTreeEvents();
+		showFirstFile();
 	}
 
 	function populateDiffTreeObject() {
@@ -276,13 +306,13 @@
 		return treeNodeResult;
 	}
 
-	function buildDiffTreeHtml(treeObject) {
+	function attachDiffTreeHtml(treeObject) {
 		// Remove the current tree diff if any to prevent duplicated
 		$('#diffTreeContainer').remove();
 
 		// Build diff tree html
 		var diffTreeContainer = '<div id="diffTreeContainer" class="expanded">';
-		diffTreeContainer += HtmlHelper.buildDiffTreeActionsPanelHtml();
+		diffTreeContainer += HtmlHelper.buildDiffTreeActionsPanelHtml(_settings.useCompactMode);
 
 		diffTreeContainer += '<div id="treeDiff">';
 		diffTreeContainer += HtmlHelper.buildTreeHtml(treeObject);
@@ -296,7 +326,7 @@
 		_$treeDiff = $('#treeDiff');
 	}
 
-	function initializeTree() {
+	function initializeJsTree() {
 		_$treeDiff.jstree({
 			core: {
 				multiple: false
