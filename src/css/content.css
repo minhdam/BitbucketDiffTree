@@ -48,20 +48,17 @@
 	line-height: 20px;
 }
 
-#compare.diff-tree,
-#changeset-diff.main.diff-tree {
-	display: inline-block;
-	padding-left: 10px;
-	width: calc(100% - 362px);
+.diff-tree-aside {
+	display: inline-block !important;
+	padding-left: 10px !important;
+	width: calc(100% - 362px) !important;
 }
 
-#compare.diff-tree.collapsed,
-#changeset-diff.main.diff-tree.collapsed {
+.diff-tree-aside.collapsed {
 	width: calc(100% - 67px);
 }
 
-#compare.diff-tree section.iterable-item.bb-udiff,
-#changeset-diff.main.diff-tree section.iterable-item.bb-udiff {
+.diff-tree-aside section.iterable-item.bb-udiff {
 	margin-top: 0;
 }
 
@@ -85,10 +82,11 @@
 	width: 20px;
 	line-height: 40px;
 	color: #707070;
+	display: inline-block;
 }
 
 #diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item {
-	
+
 }
 
 #diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item .aui-icon:before {

@@ -58,8 +58,8 @@
 
 			return '<div class="dt-actions">' +
 						'<div class="dt-action-group">' +
-							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label">Remove diff tree</span></a>' +
 							'<a id="btnCollapseExpandDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-arrows-left">Collapse diff tree</span></a>' +
+							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label">Remove diff tree</span></a>' +
 						'</div>' +
 						'<div class="dt-action-group">' +
 							'<a id="btnCompactEmptyFoldersToggle" href="#" class="dt-action-item" title="' + (useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders') + '"><span class="aui-icon aui-icon-small ' + (useCompactMode ? 'aui-iconfont-focus' : 'aui-iconfont-unfocus') + '">Settings</span></a>' +

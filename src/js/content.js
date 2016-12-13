@@ -118,7 +118,7 @@
 		_$commitFilesSummary.show();
 		_$diffSections.show();
 		_$diffTreeContainer.remove();
-		_$pullRequestDiffCompare.removeClass('diff-tree');
+		_$pullRequestDiffCompare.removeClass('diff-tree-aside');
 
 		_newCommentObserver.stopObserving();
 		_fileChangesObserver.stopObserving();
@@ -126,6 +126,7 @@
 
 	function bindEvents() {
 		// when user change to "Overview" tab, the code changes is re-loaded, so we need to re-initialize the diff tree
+		_$pullRequestTabNavigation.off('click', '#pr-menu-diff, #compare-diff-tab');
 		_$pullRequestTabNavigation.on('click', '#pr-menu-diff, #compare-diff-tab',
 			function() {
 				tryToLoadDiffTreeTool();
@@ -133,13 +134,15 @@
 	}
 
 	function bindDiffTreeEvents() {
-		_$diffTreeContainer.on('click', '#btnRemoveDiffTree', function(e) {
+		$(document).off('click', '#btnRemoveDiffTree');
+		$(document).on('click', '#btnRemoveDiffTree', function(e) {
 			e.preventDefault();
 
 			disableDiffTree();
 		});
 
-		_$diffTreeContainer.on('click', '#btnCollapseExpandDiffTree', function(e) {
+		$(document).off('click', '#btnCollapseExpandDiffTree');
+		$(document).on('click', '#btnCollapseExpandDiffTree', function(e) {
 			e.preventDefault();
 
 			_$diffTreeContainer.toggleClass('expanded collapsed');
@@ -150,7 +153,8 @@
 				.toggleClass('aui-iconfont-arrows-left aui-iconfont-arrows-right');
 		});
 
-		_$diffTreeContainer.on('click', '#btnCompactEmptyFoldersToggle', function(e) {
+		$(document).off('click', '#btnCompactEmptyFoldersToggle');
+		$(document).on('click', '#btnCompactEmptyFoldersToggle', function(e) {
 			e.preventDefault();
 
 			var useCompactMode = _settings.useCompactMode || false;
@@ -321,7 +325,7 @@
 		diffTreeContainer += '</div>'; // end of #difTreeContainer
 
 		_$pullRequestDiffCompare.before(diffTreeContainer);
-		_$pullRequestDiffCompare.addClass('diff-tree');
+		_$pullRequestDiffCompare.addClass('diff-tree-aside');
 		_$diffTreeContainer = $('#diffTreeContainer');
 		_$treeDiff = $('#treeDiff');
 	}
