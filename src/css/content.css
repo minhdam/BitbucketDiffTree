@@ -55,11 +55,16 @@
 }
 
 .diff-tree-aside.collapsed {
-	width: calc(100% - 67px);
+	width: calc(100% - 67px) !important;
 }
 
 .diff-tree-aside section.iterable-item.bb-udiff {
 	margin-top: 0;
+}
+
+.diff-tree-aside .diff-container {
+	margin-left: 0;
+	padding-left: 0;
 }
 
 #diffTreeContainer .dt-actions {
