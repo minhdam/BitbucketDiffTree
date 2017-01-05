@@ -83,6 +83,9 @@
 				case 3: //file conflicted
 					result = '<span class="aui-lozenge aui-lozenge-current" original-title="Conflict: File modified in both source and destination">C</span>';
 					break;
+				case 4: //file renamed
+					result = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-moved" original-title="Renamed">R</span>';
+					break;
 			}
 
 			return result;

@@ -109,6 +109,8 @@
 			scrollToPullRequestSection();
 		}
 
+		navigateToNodeInHash();
+
 		_newCommentObserver.startObserving(newCommentAdded);
 		_fileChangesObserver.startObserving(enableDiffTree);
 	}
@@ -384,6 +386,8 @@
 			fileStatus = 2;
 		} else if ($iterableItem.hasClass('file-mergeconflict')) {
 			fileStatus = 3;
+		} else if ($iterableItem.hasClass('file-renamed')) {
+			fileStatus = 4;
 		}
 
 		return fileStatus;
@@ -400,27 +404,43 @@
 		return count;
 	}
 
+	function navigateToNodeInHash() {
+		var commentId = window.location.hash;
+		var $commentNode = $(commentId);
+		if ($commentNode.length > 0) {
+			navigateToCommentNode($commentNode);
+		}
+	}
+
 	function newCommentAdded(target, addedNode) {
-		var $section = $(target).closest('section.iterable-item.bb-udiff');
-		var refUrl = $section.attr('id');
-		var $treeNode = _$treeDiff.find('li.isLeaf[data-file-identifier*="' + refUrl + '"]');
-
-		_$treeDiff.jstree(true).deselect_all();
-		_$treeDiff.jstree(true).select_node($treeNode);
-
 		setTimeout(function () {
 			var $addedNode = $(addedNode);
 			if (!$addedNode.hasClass('comment')) {
 				$addedNode = $addedNode.find('li.comment:first-child');
 			}
 
-			scrollToNewCommentNode($addedNode);
+			navigateToCommentNode($addedNode);
 		}, 500);
 	}
 
-	function scrollToNewCommentNode($addedNode) {
-		var elOffset = $addedNode.offset().top;
-		var elHeight = $addedNode.height();
+	function navigateToCommentNode($commentNode) {
+		// Select the file that contains the comment on diff tree
+		var $section = $commentNode.closest('section.iterable-item.bb-udiff');
+		var refUrl = $section.attr('id');
+		var $treeNode = _$treeDiff.find('li.isLeaf[data-file-identifier*="' + refUrl + '"]');
+
+		_$treeDiff.jstree(true).deselect_all();
+		_$treeDiff.jstree(true).select_node($treeNode);
+
+		scrollToCommentNode($commentNode);
+	}
+
+	function scrollToCommentNode($commentNode) {
+		$commentNode = $($commentNode);
+
+		// Calculate the scroll offset
+		var elOffset = $commentNode.offset().top;
+		var elHeight = $commentNode.height();
 		var windowHeight = $(window).height();
 
 		var offset;
@@ -432,12 +452,12 @@
 		}
 
 		// Animate and highlight the new comment node
-		$addedNode.attr('style', 'background-color: #f5f5f5');
+		$commentNode.attr('style', 'background-color: #f5f5f5');
 		$('html, body').stop().animate({
 			scrollTop: offset
 		}, 500, function () {
 			setTimeout(function () {
-				$addedNode.removeAttr('style');
+				$commentNode.removeAttr('style');
 			}, 1000);
 		});
 	}
