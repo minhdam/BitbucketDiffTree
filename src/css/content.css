@@ -48,6 +48,10 @@
 	line-height: 20px;
 }
 
+#treeDiff .hasComment .fileIcon{
+	color: red;
+}
+
 .diff-tree-aside {
 	display: inline-block !important;
 	padding-left: 10px !important;

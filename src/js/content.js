@@ -143,16 +143,18 @@
 			disableDiffTree();
 		});
 
-		$(document).off('click', '#btnCollapseExpandDiffTree');
-		$(document).on('click', '#btnCollapseExpandDiffTree', function(e) {
+		$(document).off('click', '#btnMinimizeDiffTree');
+		$(document).on('click', '#btnMinimizeDiffTree', function(e) {
 			e.preventDefault();
 
 			_$diffTreeContainer.toggleClass('expanded collapsed');
 			_$pullRequestDiffCompare.toggleClass('expanded collapsed');
 
-			$('#btnCollapseExpandDiffTree')
+			$('#btnMinimizeDiffTree')
 				.find('span.aui-icon')
 				.toggleClass('aui-iconfont-arrows-left aui-iconfont-arrows-right');
+
+			$('.dt-main-actions').toggleClass('hidden');
 		});
 
 		$(document).off('click', '#btnCompactEmptyFoldersToggle');
@@ -171,6 +173,20 @@
 				.find('span.aui-icon')
 				.toggleClass('aui-iconfont-unfocus aui-iconfont-focus')
 				.attr('title', title);
+		});
+
+		$(document).off('click', '#btnCollapseAllFolders');
+		$(document).on('click', '#btnCollapseAllFolders', function(e) {
+			e.preventDefault();
+			
+			_$treeDiff.jstree("close_all");
+		});
+
+		$(document).off('click', '#btnExpandAllFolders');
+		$(document).on('click', '#btnExpandAllFolders', function(e) {
+			e.preventDefault();
+			
+			_$treeDiff.jstree("open_all");
 		});
 	}
 

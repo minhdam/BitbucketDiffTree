@@ -21,10 +21,14 @@
 					className += 'isLeaf ';
 				}
 
+				if (data.commentCount > 0) {
+					className += 'hasComment ';
+				}
+
 				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + data.name + '">';
 				if (data.isLeaf) {
 					content =
-						HtmlHelper.buildFileIconHtml() + '&nbsp;' +
+						HtmlHelper.buildFileIconHtml(data.commentCount) + '&nbsp;' +
 						HtmlHelper.buildLozengeFileStatusHtml(data.fileStatus) + '&nbsp;' +
 						data.name + '&nbsp' +
 						HtmlHelper.buildCommentCountBadgeHtml(data.commentCount);
@@ -58,11 +62,13 @@
 
 			return '<div class="dt-actions">' +
 						'<div class="dt-action-group">' +
-							'<a id="btnCollapseExpandDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-arrows-left">Collapse diff tree</span></a>' +
-							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label">Remove diff tree</span></a>' +
+							'<a id="btnMinimizeDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-arrows-left" title="Minimize diff tree">Minimize diff tree</span></a>' +
+							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label" title="Remove diff tree">Remove diff tree</span></a>' +
 						'</div>' +
-						'<div class="dt-action-group">' +
+						'<div class="dt-action-group dt-main-actions">' +
 							'<a id="btnCompactEmptyFoldersToggle" href="#" class="dt-action-item" title="' + (useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders') + '"><span class="aui-icon aui-icon-small ' + (useCompactMode ? 'aui-iconfont-focus' : 'aui-iconfont-unfocus') + '">Settings</span></a>' +
+							'<a id="btnCollapseAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-up" title="Collapse all folders">Collapse all folders</span></a>' +
+							'<a id="btnExpandAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-down" title="Expand all folders">Expand all folders</span></a>' +
 						'</div>' +
 				'</div>';
 		},
@@ -104,8 +110,8 @@
 			return '';
 		},
 
-		buildFileIconHtml: function() {
-			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-file">File</span>';
+		buildFileIconHtml: function(commentCount) {
+			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-file fileIcon">File</span>';
 		},
 
 		buildFolderOpenIconHtml: function() {
