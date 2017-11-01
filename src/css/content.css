@@ -102,3 +102,12 @@
 #diffTreeContainer .dt-actions .dt-action-item .aui-icon:before {
 	font-size: 16px;
 }
+
+#compare {
+	tab-size: 4;
+}
+
+#compare .refract-container .addition pre.source ins,
+#compare .refract-container .deletion pre.source del {
+    display: inline !important;
+}
