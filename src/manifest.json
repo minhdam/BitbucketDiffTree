@@ -1,7 +1,7 @@
 {
 	"name": "Bitbucket Diff Tree",
 	"description": "Extension to display diff tree for Bitbucket",
-	"version": "1.1",
+	"version": "1.2",
 	"manifest_version": 2,
 
 	"background": {
@@ -24,11 +24,19 @@
 			"js": [
 				"libs/jquery.min.js",
 				"libs/jstree/jstree.min.js",
+
 				"js/namespaces.js",
+				
 				"js/models/treeNodeModel.js",
+				"js/models/pullRequestModel.js",
+				
 				"js/helpers/htmlHelper.js",
+				"js/helpers/pullRequestHelper.js",
+				"js/helpers/localStorageHelper.js",
+
 				"js/observers/newCommentObserver.js",
 				"js/observers/fileChangesObserver.js",
+				
 				"js/content.js"
 			],
 

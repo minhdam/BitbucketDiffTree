@@ -3,8 +3,8 @@
 
 	var HtmlHelper = {
 
-		buildTreeHtml: function(treeNodeObject) {
-			var childItems = treeNodeObject.getChildrenAsArray();
+		buildTreeHtml: function(oTreeNodeObject) {
+			var childItems = oTreeNodeObject.getChildrenAsArray();
 
 			if (childItems.length === 0) {
 				return '';
@@ -25,10 +25,14 @@
 					className += 'hasComment ';
 				}
 
+				if (data.bIsReviewed) {
+					className += 'isReviewed ';
+				}
+
 				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + data.name + '">';
 				if (data.isLeaf) {
 					content =
-						HtmlHelper.buildFileIconHtml(data.commentCount) + '&nbsp;' +
+						HtmlHelper.buildFileIconHtml(data.bIsReviewed) + '&nbsp;' +
 						HtmlHelper.buildLozengeFileStatusHtml(data.fileStatus) + '&nbsp;' +
 						data.name + '&nbsp' +
 						HtmlHelper.buildCommentCountBadgeHtml(data.commentCount);
@@ -57,8 +61,8 @@
 			
 		},
 
-		buildDiffTreeActionsPanelHtml: function(useCompactMode) {
-			useCompactMode = useCompactMode || false;
+		buildDiffTreeActionsPanelHtml: function(bUseCompactMode) {
+			bUseCompactMode = bUseCompactMode || false;
 
 			return '<div class="dt-actions">' +
 						'<div class="dt-action-group">' +
@@ -66,43 +70,43 @@
 							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label" title="Remove diff tree">Remove diff tree</span></a>' +
 						'</div>' +
 						'<div class="dt-action-group dt-main-actions">' +
-							'<a id="btnCompactEmptyFoldersToggle" href="#" class="dt-action-item" title="' + (useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders') + '"><span class="aui-icon aui-icon-small ' + (useCompactMode ? 'aui-iconfont-focus' : 'aui-iconfont-unfocus') + '">Settings</span></a>' +
+							'<a id="btnCompactEmptyFoldersToggle" href="#" class="dt-action-item" title="' + (bUseCompactMode ? 'Uncompact empty folders' : 'Compact empty folders') + '"><span class="aui-icon aui-icon-small ' + (bUseCompactMode ? 'aui-iconfont-focus' : 'aui-iconfont-unfocus') + '">Settings</span></a>' +
 							'<a id="btnCollapseAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-up" title="Collapse all folders">Collapse all folders</span></a>' +
 							'<a id="btnExpandAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-down" title="Expand all folders">Expand all folders</span></a>' +
 						'</div>' +
 				'</div>';
 		},
 
-		buildLozengeFileStatusHtml: function(fileStatus) {
-			var result = '';
+		buildLozengeFileStatusHtml: function(iFileStatus) {
+			var sResult = '';
 
-			switch (fileStatus) {
+			switch (iFileStatus) {
 				case 0: //file added
-					result = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-success" original-title="Added">A</span>';
+					sResult = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-success fileStatus" original-title="Added">A</span>';
 					break;
 				case 1: //file modified
-					result = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-complete" original-title="Modified">M</span>';
+					sResult = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-complete fileStatus" original-title="Modified">M</span>';
 					break;
 				case 2: //file deleted
-					result = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-error" original-title="Deleted">D</span>';
+					sResult = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-error fileStatus" original-title="Deleted">D</span>';
 					break;
 				case 3: //file conflicted
-					result = '<span class="aui-lozenge aui-lozenge-current" original-title="Conflict: File modified in both source and destination">C</span>';
+					sResult = '<span class="aui-lozenge aui-lozenge-current fileStatus" original-title="Conflict: File modified in both source and destination">C</span>';
 					break;
 				case 4: //file renamed
-					result = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-moved" original-title="Renamed">R</span>';
+					sResult = '<span class="aui-lozenge aui-lozenge-subtle aui-lozenge-moved fileStatus" original-title="Renamed">R</span>';
 					break;
 			}
 
-			return result;
+			return sResult;
 		},
 
-		buildCommentCountBadgeHtml: function(count) {
-			if (count && count > 0) {
+		buildCommentCountBadgeHtml: function(iCount) {
+			if (iCount && iCount > 0) {
 				return '<div class="count-badge">' +
 					'<span class="aui-icon aui-icon-small aui-iconfont-comment">Comments</span>' +
 					'<span class="count">' +
-					count +
+					iCount +
 					'</span>' +
 					'</div>';
 			}
@@ -110,8 +114,9 @@
 			return '';
 		},
 
-		buildFileIconHtml: function(commentCount) {
-			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-file fileIcon">File</span>';
+		buildFileIconHtml: function(bIsReviewed) {
+			var iconClass = bIsReviewed ? 'aui-iconfont-approve' : 'aui-iconfont-devtools-task-in-progress';
+			return '<span class="jstree-node-icon aui-icon aui-icon-small fileIcon reviewed-checkbox ' + iconClass + '">File</span>';
 		},
 
 		buildFolderOpenIconHtml: function() {

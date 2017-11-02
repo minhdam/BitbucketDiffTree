@@ -48,8 +48,16 @@
 	line-height: 20px;
 }
 
-#treeDiff .hasComment .fileIcon{
-	color: red;
+#treeDiff .fileIcon {
+	color: #4B6884;
+}
+
+#treeDiff .isReviewed .fileIcon{
+	color: #1D8832;
+}
+
+#treeDiff .hasComment .fileStatus{
+	color: #FDA428;
 }
 
 .diff-tree-aside {
@@ -108,7 +116,7 @@
 }
 
 #compare {
-	tab-size: 4;
+	/* tab-size: 4; */
 }
 
 #compare .refract-container .addition pre.source ins,

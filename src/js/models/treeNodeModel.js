@@ -14,7 +14,8 @@
 			folderCount: 0,
 			fileCount: 0,
 			fileStatus: null,
-			commentCount: 0
+			commentCount: 0,
+			bIsReviewed: false
 		}
 	}
 
@@ -35,7 +36,8 @@
 			folderCount: _this.data.folderCount,
 			fileCount: _this.data.fileCount,
 			fileStatus: _this.data.fileStatus,
-			commentCount: _this.data.commentCount
+			commentCount: _this.data.commentCount,
+			bIsReviewed: _this.data.bIsReviewed
 		};
 
 		return newObject;

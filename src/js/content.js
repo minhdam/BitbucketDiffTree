@@ -1,7 +1,10 @@
 (function (
-	TreeNodeModel, 
-	HtmlHelper, 
-	NewCommentObserver, 
+	TreeNodeModel,
+	PullRequestModel,
+	HtmlHelper,
+	PullRequestHelper,
+	LocalStorageHelper,
+	NewCommentObserver,
 	FileChangesObserver) {
 
 	'use strict';
@@ -23,11 +26,14 @@
 
 	var _treeObject;
 
+	var _oPullRequestModel = new PullRequestModel();
+	var _oPullRequestFileStatuses;
+
 	// Get the settings
 	var _settings = {};
-	chrome.storage.sync.get(null, function(settings) {
+	LocalStorageHelper.getAllSettings(function(settings) {
 		_settings = settings;
-
+		
 		if (canApplyDiffTree()) {
 			tryToLoadDiffTreeTool();
 		}
@@ -49,7 +55,7 @@
 
 	$(function() {
 		_$pullRequestTabNavigation = $('#pullrequest-navigation, #compare-tabs');
-
+		_oPullRequestModel = PullRequestHelper.getPullRequestMetadata();
 		bindEvents();
 	});
 
@@ -93,8 +99,8 @@
 		}
 	}
 
-	function enableDiffTree(isOnLoad) {
-		isOnLoad = isOnLoad || false;
+	function enableDiffTree(bIsOnLoad) {
+		bIsOnLoad = bIsOnLoad || false;
 
 		if ($('#diffTreeContainer').length === 0) {
 			init();
@@ -105,7 +111,7 @@
 			buildDiffTree(_settings.useCompactMode);
 		}
 
-		if (!isOnLoad) {
+		if (!bIsOnLoad) {
 			scrollToPullRequestSection();
 		}
 
@@ -165,6 +171,12 @@
 			e.preventDefault();
 			expandAllFolders();
 		});
+
+		$(document).off('click', '.reviewed-checkbox');
+		$(document).on('click', '.reviewed-checkbox', function(e) {
+			e.preventDefault();
+			markAsReviewed($(this));
+		});
 	}
 
 	function minimizeDiffTree() {
@@ -202,8 +214,18 @@
 	}
 
 	function saveCompactModeSetting(useCompactMode) {
-		chrome.storage.sync.set({ useCompactMode: useCompactMode }, function() {
-			_settings.useCompactMode = useCompactMode;
+		LocalStorageHelper.setUseCompactModeSetting(useCompactMode);
+		_settings.useCompactMode = useCompactMode;
+	}
+
+	function markAsReviewed($icon) {
+		var $node = $icon.closest('li[role=treeitem]');
+		var sFileIdentifier = $node.data('file-identifier').replace('#chg-', '');
+		var bIsReviewed = !$icon.hasClass('aui-iconfont-approve');
+
+		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, function() {
+			$icon.toggleClass('aui-iconfont-approve aui-iconfont-devtools-task-in-progress');
+			$node.toggleClass('isReviewed');
 		});
 	}
 
@@ -236,25 +258,26 @@
 					var sectionId = fileIdentifier.replace('#', '').replace(/%20/g, ' ');
 					var $section = $('section[id*="' + sectionId + '"]');
 					$section.show();
-
-					$node.addClass('already-reviewed');
 				}
 			});
 	}
 
-	function buildDiffTree(isCompactMode) {
-		isCompactMode = isCompactMode || false;
-
-		_treeObject = populateDiffTreeObject();
-		if (isCompactMode) {
-			_treeObject = compactEmptyFoldersDiffTreeObject(_treeObject);
-		}
+	function buildDiffTree(bIsCompactMode) {
+		bIsCompactMode = bIsCompactMode || false;
 		
-		attachDiffTreeHtml(_treeObject);
-		initializeJsTree();
-		bindJsTreeEvents();
-		bindDiffTreeEvents();
-		showFirstFile();
+		LocalStorageHelper.getPullRequestStatus(_oPullRequestModel, function(data) {
+			_oPullRequestFileStatuses = data;
+			_treeObject = populateDiffTreeObject();
+			if (bIsCompactMode) {
+				_treeObject = compactEmptyFoldersDiffTreeObject(_treeObject);
+			}
+			
+			attachDiffTreeHtml(_treeObject);
+			initializeJsTree();
+			bindJsTreeEvents();
+			bindDiffTreeEvents();
+			showFirstFile();
+		});
 	}
 
 	function populateDiffTreeObject() {
@@ -289,6 +312,7 @@
 						item.data.link = link;
 						item.data.fileStatus = getFileStatus($self);
 						item.data.commentCount = getFileCommentCount($self);
+						item.data.bIsReviewed = _oPullRequestFileStatuses[fileName] && _oPullRequestFileStatuses[fileName].isReviewed;
 					}
 
 					tempObject = tempObject.children[folder];
@@ -300,25 +324,24 @@
 		return treeObject;
 	}
 
-	function compactEmptyFoldersDiffTreeObject(treeObject) {
-		var compactTreeObject = treeObject.cloneDataOnly();
-		compactTreeObject = compactEmptyFoldersRecursive(treeObject);
-		//console.log(compactTreeObject);
+	function compactEmptyFoldersDiffTreeObject(oTreeObject) {
+		var compactTreeObject = oTreeObject.cloneDataOnly();
+		compactTreeObject = compactEmptyFoldersRecursive(oTreeObject);
 
 		return compactTreeObject;
 	}
 
-	function compactEmptyFoldersRecursive(treeNode) {
-		var treeNodeResult = treeNode.cloneDataOnly();
-		var parentNode = treeNode;
+	function compactEmptyFoldersRecursive(oTreeNode) {
+		var treeNodeResult = oTreeNode.cloneDataOnly();
+		var parentNode = oTreeNode;
 
-		if (treeNode.data.isLeaf) {
+		if (oTreeNode.data.isLeaf) {
 			return treeNodeResult;
 		}
 
-		if (treeNode.isRoot() === false &&
-			treeNode.data.folderCount === 1 && 
-			treeNode.data.fileCount === 0) {
+		if (oTreeNode.isRoot() === false &&
+			oTreeNode.data.folderCount === 1 && 
+			oTreeNode.data.fileCount === 0) {
 
 			var compactNodeName = parentNode.data.name;
 
@@ -339,7 +362,7 @@
 		return treeNodeResult;
 	}
 
-	function attachDiffTreeHtml(treeObject) {
+	function attachDiffTreeHtml(oTreeObject) {
 		// Remove the current tree diff if any to prevent duplicated
 		$('#diffTreeContainer').remove();
 
@@ -348,7 +371,7 @@
 		diffTreeContainer += HtmlHelper.buildDiffTreeActionsPanelHtml(_settings.useCompactMode);
 
 		diffTreeContainer += '<div id="treeDiff">';
-		diffTreeContainer += HtmlHelper.buildTreeHtml(treeObject);
+		diffTreeContainer += HtmlHelper.buildTreeHtml(oTreeObject);
 		diffTreeContainer += '</div>'; // end of #treeDiff
 
 		diffTreeContainer += '</div>'; // end of #difTreeContainer
@@ -397,9 +420,8 @@
 	function scrollToPullRequestSection() {
 		$('html, body')
 			.animate({
-					scrollTop: _$pullRequestDiff.offset().top
-				},
-				500);
+				scrollTop: _$pullRequestDiff.offset().top
+			}, 500);
 	}
 
 	function getFileStatus($iterableItem) {
@@ -491,6 +513,9 @@
 
 })(
 	BDT.Models.TreeNodeModel,
+	BDT.Models.PullRequestModel,
 	BDT.Helpers.HtmlHelper,
+	BDT.Helpers.PullRequestHelper,
+	BDT.Helpers.LocalStorageHelper,
 	BDT.DomObservers.NewCommentObserver,
 	BDT.DomObservers.FileChangesObserver);
