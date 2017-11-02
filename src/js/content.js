@@ -139,55 +139,66 @@
 		$(document).off('click', '#btnRemoveDiffTree');
 		$(document).on('click', '#btnRemoveDiffTree', function(e) {
 			e.preventDefault();
-
 			disableDiffTree();
 		});
 
 		$(document).off('click', '#btnMinimizeDiffTree');
 		$(document).on('click', '#btnMinimizeDiffTree', function(e) {
 			e.preventDefault();
-
-			_$diffTreeContainer.toggleClass('expanded collapsed');
-			_$pullRequestDiffCompare.toggleClass('expanded collapsed');
-
-			$('#btnMinimizeDiffTree')
-				.find('span.aui-icon')
-				.toggleClass('aui-iconfont-arrows-left aui-iconfont-arrows-right');
-
-			$('.dt-main-actions').toggleClass('hidden');
+			minimizeDiffTree();
 		});
 
 		$(document).off('click', '#btnCompactEmptyFoldersToggle');
 		$(document).on('click', '#btnCompactEmptyFoldersToggle', function(e) {
 			e.preventDefault();
-
-			var useCompactMode = _settings.useCompactMode || false;
-			useCompactMode = !useCompactMode;
-
-			buildDiffTree(useCompactMode);
-			saveCompactModeSetting(useCompactMode);
-
-			var title = useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders';
-
-			$('#btnCompactEmptyFoldersToggle')
-				.find('span.aui-icon')
-				.toggleClass('aui-iconfont-unfocus aui-iconfont-focus')
-				.attr('title', title);
+			compactEmptyFoldersToggle();
 		});
 
 		$(document).off('click', '#btnCollapseAllFolders');
 		$(document).on('click', '#btnCollapseAllFolders', function(e) {
 			e.preventDefault();
-			
-			_$treeDiff.jstree("close_all");
+			collapseAllFolders();
 		});
 
 		$(document).off('click', '#btnExpandAllFolders');
 		$(document).on('click', '#btnExpandAllFolders', function(e) {
 			e.preventDefault();
-			
-			_$treeDiff.jstree("open_all");
+			expandAllFolders();
 		});
+	}
+
+	function minimizeDiffTree() {
+		_$diffTreeContainer.toggleClass('expanded collapsed');
+		_$pullRequestDiffCompare.toggleClass('expanded collapsed');
+
+		$('#btnMinimizeDiffTree')
+			.find('span.aui-icon')
+			.toggleClass('aui-iconfont-arrows-left aui-iconfont-arrows-right');
+
+		$('.dt-main-actions').toggleClass('hidden');
+	}
+
+	function compactEmptyFoldersToggle() {
+		var useCompactMode = _settings.useCompactMode || false;
+		useCompactMode = !useCompactMode;
+
+		buildDiffTree(useCompactMode);
+		saveCompactModeSetting(useCompactMode);
+
+		var title = useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders';
+
+		$('#btnCompactEmptyFoldersToggle')
+			.find('span.aui-icon')
+			.toggleClass('aui-iconfont-unfocus aui-iconfont-focus')
+			.attr('title', title);
+	}
+
+	function expandAllFolders() {
+		_$treeDiff.jstree("open_all");
+	}
+
+	function collapseAllFolders() {
+		_$treeDiff.jstree("close_all");
 	}
 
 	function saveCompactModeSetting(useCompactMode) {
