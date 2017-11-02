@@ -13,7 +13,7 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 * Allow enable diff tree extension permanently
 
 ### v1.0.6:
-* Allow collapse/expand the diff tree region
+* Allow minimizing the diff tree region
 
 ### v1.0.7:
 * Navigate to corresponding comment when clicking on the "new comment notification" area at the bottom right corner
@@ -22,6 +22,10 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 ### v1.0.8:
 * Option to compact empty middle packages
 * Show diff tree on commits page
+
+### v1.1:
+* Allow collapsing / expanding all folders
+* Fix for tab size and nasty css bug which breaks alignments
 
 ## How to install
 - Chrome webstore: https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf
