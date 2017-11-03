@@ -116,7 +116,8 @@
 
 		buildFileIconHtml: function(bIsReviewed) {
 			var iconClass = bIsReviewed ? 'aui-iconfont-approve' : 'aui-iconfont-devtools-task-in-progress';
-			return '<span class="jstree-node-icon aui-icon aui-icon-small fileIcon reviewed-checkbox ' + iconClass + '">File</span>';
+			var title = HtmlHelper.getMarkAsReviewedCheckboxTitle(bIsReviewed);
+			return '<span class="jstree-node-icon aui-icon aui-icon-small fileIcon reviewed-checkbox ' + iconClass + '" title="' + title + '">File</span>';
 		},
 
 		buildFolderOpenIconHtml: function() {
@@ -125,6 +126,10 @@
 
 		buildFolderCloseIconHtml: function() {
 			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-folder-closed" style="color:#0075B1;">Folder closed</span>';
+		},
+
+		getMarkAsReviewedCheckboxTitle: function(bIsReviewed) {
+			return bIsReviewed ? 'Click to unmark as reviewed' : 'Click to mark as reviewed';
 		}
 	};
 

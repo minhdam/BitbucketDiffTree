@@ -226,6 +226,8 @@
 		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, function() {
 			$icon.toggleClass('aui-iconfont-approve aui-iconfont-devtools-task-in-progress');
 			$node.toggleClass('isReviewed');
+			var title = HtmlHelper.getMarkAsReviewedCheckboxTitle(bIsReviewed);
+			$icon.attr('title', title);
 		});
 	}
 
