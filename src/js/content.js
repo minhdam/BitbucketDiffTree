@@ -27,7 +27,18 @@
 	var _treeObject;
 
 	var _oPullRequestModel = new PullRequestModel();
-	var _oPullRequestFileStatuses;
+
+	/**
+	 * An object of
+	 * 	{
+	 * 		fileIdentifier1: { isReviewed: true },
+	 * 		fileIdentifier2: { isReviewed: false },
+	 * 		...
+	 *  }
+	 */
+	var _oPullRequestFileStatuses; 
+
+	var _manifestData = chrome.runtime.getManifest();
 
 	// Get the settings
 	var _settings = {};
@@ -177,6 +188,11 @@
 			e.preventDefault();
 			markAsReviewed($(this));
 		});
+
+		$(document).off('click', '#newVersionIndicator');
+		$(document).on('click', '#newVersionIndicator', function(e) {
+			markAsAwarenessOfNewVersion();
+		});
 	}
 
 	function minimizeDiffTree() {
@@ -223,12 +239,23 @@
 		var sFileIdentifier = $node.data('file-identifier').replace('#chg-', '');
 		var bIsReviewed = !$icon.hasClass('aui-iconfont-approve');
 
-		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, function() {
-			$icon.toggleClass('aui-iconfont-approve aui-iconfont-devtools-task-in-progress');
-			$node.toggleClass('isReviewed');
-			var title = HtmlHelper.getMarkAsReviewedCheckboxTitle(bIsReviewed);
-			$icon.attr('title', title);
+		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, function(data) {
+			_oPullRequestFileStatuses = data;
+			updateFileReviewStatus($node, bIsReviewed);
 		});
+	}
+
+	function updateFileReviewStatus($node, bIsReviewed) {
+		var $icon = $node.find('.fileIcon');
+		var title = HtmlHelper.getMarkAsReviewedCheckboxTitle(bIsReviewed);
+		$node.toggleClass('isReviewed', bIsReviewed);
+		$icon.toggleClass('aui-iconfont-approve', bIsReviewed);
+		$icon.toggleClass('aui-iconfont-devtools-task-in-progress', !bIsReviewed);
+		$icon.attr('title', title);
+	}
+
+	function markAsAwarenessOfNewVersion() {
+		LocalStorageHelper.setVersionSetting(_manifestData.version);
 	}
 
 	function bindJsTreeEvents() {
@@ -262,6 +289,17 @@
 					$section.show();
 				}
 			});
+
+		_$treeDiff.on('open_node.jstree',
+			function(event, data) {
+				var childNodes = data.node.children;
+				childNodes.forEach(function(node) {
+					var $node = $('#' + node);
+					var sFileIdentifier = $node.data('file-identifier').replace('#chg-', '');
+					var bIsReviewed = _oPullRequestFileStatuses[sFileIdentifier].isReviewed;
+					updateFileReviewStatus($node, bIsReviewed);
+				}, this);
+			});
 	}
 
 	function buildDiffTree(bIsCompactMode) {
@@ -279,6 +317,7 @@
 			bindJsTreeEvents();
 			bindDiffTreeEvents();
 			showFirstFile();
+			showNewVersionIndicator();
 		});
 	}
 
@@ -416,6 +455,15 @@
 		var $firstFileNode = _$treeDiff.find('li.jstree-node.isLeaf:eq(0)');
 		if ($firstFileNode.length > 0) {
 			_$treeDiff.jstree(true).select_node($firstFileNode);
+		}
+	}
+
+	function showNewVersionIndicator() {
+		var $newVersionIndicator = $('#newVersionIndicator');
+		var previousExtensionVersion = _settings.version;
+		var currentExtenstionVersion = _manifestData.version;
+		if (previousExtensionVersion !== currentExtenstionVersion) {
+			$newVersionIndicator.removeClass('hidden');
 		}
 	}
 

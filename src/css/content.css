@@ -115,6 +115,10 @@
 	font-size: 16px;
 }
 
+#diffTreeContainer #newVersionIndicator span.aui-icon:before {
+	font-size: 14px;
+}
+
 #compare {
 	/* tab-size: 4; */
 }

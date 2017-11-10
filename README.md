@@ -28,7 +28,10 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 * Fix for tab size and nasty css bug which breaks alignments
 
 ### v1.2:
-* Track files have been reviewed
+* Track files have been reviewed by clicking on the "..." icon on the left of the files
+
+### v1.3:
+* Show new version indicator for Bitbucket Diff Tree
 
 ## How to install
 - Chrome webstore: https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf

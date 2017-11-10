@@ -4,7 +4,7 @@
 	var LocalStorageHelper = {
 
 		getAllSettings: function(fnCallback) {
-			chrome.storage.sync.get(['enableAlways', 'useCompactMode'], function(settings) {
+			chrome.storage.sync.get(['enableAlways', 'useCompactMode', 'version'], function(settings) {
 				if (fnCallback) {
 					fnCallback.call(this, settings);
 				}
@@ -19,6 +19,23 @@
 			});
 		},
 
+		setVersionSetting: function(version, fnCallback) {
+			chrome.storage.sync.set({ 'version': version }, function() {
+				if (fnCallback) {
+					fnCallback.call(this);
+				}
+			});
+		},
+
+		/**
+		 * Get the pull request status
+		 * Returns: An object of 
+		 * 	{ 
+		 *		fileIdentifier1: { isReviewed: true }, 
+		 *		fileIdentifier2: { isReviewed: false }, 
+		 *		... 
+		 *	}
+		 */
 		getPullRequestStatus: function(oPullRequestModel, fnCallback) {
 			var key = 'userid_' + oPullRequestModel.userId 
 					+ '_prid_' + oPullRequestModel.pullRequestId 
@@ -59,7 +76,7 @@
 				obj[key] = oData;
 				chrome.storage.sync.set(obj, function() {
 					if (fnCallback) {
-						fnCallback.call(this);
+						fnCallback.call(this, oData);
 					}
 				});
 			});
