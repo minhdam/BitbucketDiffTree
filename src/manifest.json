@@ -24,6 +24,7 @@
 			"js": [
 				"libs/jquery.min.js",
 				"libs/jstree/jstree.min.js",
+				"libs/jquery-resizable.js",
 
 				"js/namespaces.js",
 				
@@ -43,6 +44,10 @@
 			"css": [
 				"libs/jstree/jstree.min.css",
 				"css/content.css"
+			],
+
+			"web_accessible_resources": [
+				"images/vsizegrip.png"
 			],
 
 			"matches": [

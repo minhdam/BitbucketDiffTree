@@ -1,8 +1,10 @@
-﻿#diffTreeContainer {
-	width: 350px;
-	display: inline-block;
-	margin-top: 30px;
-	float: left;
+﻿#diffTreeWrapper {
+	width: 100%;
+	margin-top: 20px;
+}
+
+#diffTreeContainer {
+	width: 30%;
 	background-color: #f5f5f5;
 	border: 1px solid #ccc;
 	/*border-radius: 6px 0 0 6px; */
@@ -58,16 +60,6 @@
 
 #treeDiff .hasComment .fileIcon{
 	color: #FDA428;
-}
-
-.diff-tree-aside {
-	display: inline-block !important;
-	padding-left: 10px !important;
-	width: calc(100% - 362px) !important;
-}
-
-.diff-tree-aside.collapsed {
-	width: calc(100% - 67px) !important;
 }
 
 .diff-tree-aside section.iterable-item.bb-udiff {
@@ -127,3 +119,56 @@
 #compare .refract-container .deletion pre.source del {
     display: inline !important;
 }
+
+#diffTreeWrapper #changeset-diff {
+    margin-top: 0px !important;
+}
+
+
+#diffTreeWrapper {
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+	
+	/* avoid browser level touch actions */
+	xtouch-action: none;
+}
+
+/* Resizable panels */
+#diffTreeContainer {
+	flex: 0 0 auto;
+	width: 400px;
+	min-height: 200px;
+	min-width: 200px;
+	max-width: 50%;
+	white-space: nowrap;
+}
+
+#diffTreeWrapper .splitter {
+	flex: 0 0 auto;
+	width: 10px;  
+	background: url('https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/vsizegrip.png') center center no-repeat #ffffff;
+	min-height: 200px;
+	cursor: col-resize;  
+}
+
+#diffTreeWrapper .splitter:hover {
+	background-color: #ccc;
+}
+
+#diffTreeWrapper .diff-tree-aside {
+	flex: 1 1 auto;
+	width: 100%;
+	min-height: 200px;
+	min-width: 200px;
+	padding-left: 0 !important;
+}
+
+#diffTreeWrapper .bb-udiff .heading {
+	border-top-left-radius: 0;
+}
+
+#diffTreeWrapper .diff-content-container {
+	border-bottom-left-radius: 0;
+}
+/* END - Resizable panels */

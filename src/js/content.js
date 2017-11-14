@@ -16,7 +16,8 @@
 		_$commitFilesSummary,
 		_$diffSections;
 
-	var _$diffTreeContainer,
+	var _$diffTreeWrapper,
+		_$diffTreeContainer,
 		_$treeDiff;
 
 	var _newCommentObserver = new NewCommentObserver(),
@@ -72,7 +73,7 @@
 
 	function init() {
 		_$pullRequestDiff = $('#pullrequest-diff, #diff, #compare-diff-content, #commit');
-		_$pullRequestDiffCompare = _$pullRequestDiff.find('> #compare, > #changeset-diff.main');
+		_$pullRequestDiffCompare = _$pullRequestDiff.find('div#compare, div#changeset-diff.main');
 		_$commitFilesSummary = _$pullRequestDiff.find('ul.commit-files-summary');
 		_$diffSections = _$pullRequestDiff.find('section.iterable-item.bb-udiff');
 	}
@@ -134,8 +135,10 @@
 		init();
 		_$commitFilesSummary.show();
 		_$diffSections.show();
+		_$diffTreeWrapper.remove();
 		_$diffTreeContainer.remove();
 		_$pullRequestDiffCompare.removeClass('diff-tree-aside');
+		_$pullRequestDiff.append(_$pullRequestDiffCompare);
 
 		_newCommentObserver.stopObserving();
 		_fileChangesObserver.stopObserving();
@@ -417,10 +420,22 @@
 
 		diffTreeContainer += '</div>'; // end of #difTreeContainer
 
-		_$pullRequestDiffCompare.before(diffTreeContainer);
+		var $diffTreeWrapper = $('<div id="diffTreeWrapper" />');
+		_$pullRequestDiff.append($diffTreeWrapper);
+		$diffTreeWrapper
+			.append(diffTreeContainer)
+			.append('<div class="splitter"></div>')
+			.append(_$pullRequestDiffCompare);
+		
 		_$pullRequestDiffCompare.addClass('diff-tree-aside');
+		_$diffTreeWrapper = $('#diffTreeWrapper');
 		_$diffTreeContainer = $('#diffTreeContainer');
 		_$treeDiff = $('#treeDiff');
+
+		_$diffTreeContainer.resizable({
+			handleSelector: ".splitter",
+			resizeHeight: false
+		});
 	}
 
 	function initializeJsTree() {

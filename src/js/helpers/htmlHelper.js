@@ -67,7 +67,7 @@
 
 			return '<div class="dt-actions">' +
 						'<div class="dt-action-group">' +
-							'<a id="btnMinimizeDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-arrows-left" title="Minimize diff tree">Minimize diff tree</span></a>' +
+							//'<a id="btnMinimizeDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-arrows-left" title="Minimize diff tree">Minimize diff tree</span></a>' +
 							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label" title="Remove diff tree">Remove diff tree</span></a>' +
 						'</div>' +
 						'<div class="dt-action-group dt-main-actions">' +
