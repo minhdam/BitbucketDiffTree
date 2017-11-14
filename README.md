@@ -33,6 +33,9 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 ### v1.3:
 * Show new version indicator for Bitbucket Diff Tree
 
+### v1.3.1:
+* Fix bug: Should navigate to the correct file based on the hash of the url (if any)
+
 ## How to install
 - Chrome webstore: https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf
 

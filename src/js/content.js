@@ -126,8 +126,6 @@
 			scrollToPullRequestSection();
 		}
 
-		navigateToNodeInHash();
-
 		_newCommentObserver.startObserving(newCommentAdded);
 		_fileChangesObserver.startObserving(enableDiffTree);
 	}
@@ -287,6 +285,8 @@
 					var sectionId = fileIdentifier.replace('#', '').replace(/%20/g, ' ');
 					var $section = $('section[id*="' + sectionId + '"]');
 					$section.show();
+
+					window.location.hash = fileIdentifier;
 				}
 			});
 
@@ -316,8 +316,8 @@
 			initializeJsTree();
 			bindJsTreeEvents();
 			bindDiffTreeEvents();
-			showFirstFile();
 			showNewVersionIndicator();
+			navigateToNodeInHash();
 		});
 	}
 
@@ -505,9 +505,11 @@
 
 	function navigateToNodeInHash() {
 		var commentId = window.location.hash;
-		var $commentNode = $(commentId);
+		var $commentNode = $('[data-file-identifier*="' + commentId + '"]');
 		if ($commentNode.length > 0) {
 			navigateToCommentNode($commentNode);
+		} else {
+			showFirstFile();
 		}
 	}
 
@@ -524,7 +526,7 @@
 
 	function navigateToCommentNode($commentNode) {
 		// Select the file that contains the comment on diff tree
-		var $section = $commentNode.closest('section.iterable-item.bb-udiff');
+		var $section = _$pullRequestDiffCompare.find('section.iterable-item.bb-udiff[id*="' + $commentNode.data('file-identifier').replace('#', '') + '"]');
 		var refUrl = $section.attr('id');
 		var $treeNode = _$treeDiff.find('li.isLeaf[data-file-identifier*="' + refUrl + '"]');
 
