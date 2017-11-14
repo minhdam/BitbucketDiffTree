@@ -4,7 +4,12 @@
 	var LocalStorageHelper = {
 
 		getAllSettings: function(fnCallback) {
-			chrome.storage.sync.get(['enableAlways', 'useCompactMode', 'version'], function(settings) {
+			chrome.storage.sync.get([
+				'enableAlways', 
+				'useCompactMode', 
+				'version', 
+				'diffTreeWidth'
+			], function(settings) {
 				if (fnCallback) {
 					fnCallback.call(this, settings);
 				}
@@ -21,6 +26,14 @@
 
 		setVersionSetting: function(version, fnCallback) {
 			chrome.storage.sync.set({ 'version': version }, function() {
+				if (fnCallback) {
+					fnCallback.call(this);
+				}
+			});
+		},
+
+		setDiffTreeWidth: function(diffTreeWidth, fnCallback) {
+			chrome.storage.sync.set({ 'diffTreeWidth': diffTreeWidth }, function() {
 				if (fnCallback) {
 					fnCallback.call(this);
 				}

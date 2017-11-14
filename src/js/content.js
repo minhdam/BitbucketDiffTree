@@ -135,10 +135,10 @@
 		init();
 		_$commitFilesSummary.show();
 		_$diffSections.show();
+		_$pullRequestDiff.append(_$pullRequestDiffCompare);
 		_$diffTreeWrapper.remove();
 		_$diffTreeContainer.remove();
 		_$pullRequestDiffCompare.removeClass('diff-tree-aside');
-		_$pullRequestDiff.append(_$pullRequestDiffCompare);
 
 		_newCommentObserver.stopObserving();
 		_fileChangesObserver.stopObserving();
@@ -408,7 +408,9 @@
 
 	function attachDiffTreeHtml(oTreeObject) {
 		// Remove the current tree diff if any to prevent duplicated
-		$('#diffTreeContainer').remove();
+		_$pullRequestDiff.append(_$pullRequestDiffCompare);
+		$('#diffTreeWrapper').remove();
+
 
 		// Build diff tree html
 		var diffTreeContainer = '<div id="diffTreeContainer" class="expanded">';
@@ -432,9 +434,19 @@
 		_$diffTreeContainer = $('#diffTreeContainer');
 		_$treeDiff = $('#treeDiff');
 
+		if (_settings.diffTreeWidth) {
+			_$diffTreeContainer.width(_settings.diffTreeWidth);
+		}
+
+		// Allow resizing the diff tree panel
 		_$diffTreeContainer.resizable({
 			handleSelector: ".splitter",
-			resizeHeight: false
+			resizeHeight: false,
+			onDragEnd: function(e, $el, opt) {
+				var width = _$diffTreeContainer.width();
+				LocalStorageHelper.setDiffTreeWidth(width);
+				_settings.diffTreeWidth = width;
+			}
 		});
 	}
 
