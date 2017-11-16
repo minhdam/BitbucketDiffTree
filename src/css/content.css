@@ -52,6 +52,7 @@
 
 #treeDiff .fileIcon {
 	color: #4B6884;
+	cursor: pointer;
 }
 
 #treeDiff .isReviewed .fileIcon{
@@ -60,6 +61,10 @@
 
 #treeDiff .hasComment .fileIcon{
 	color: #FDA428;
+}
+
+#treeDiff .jstree-anchor {
+	cursor: default;
 }
 
 .diff-tree-aside section.iterable-item.bb-udiff {

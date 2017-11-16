@@ -72,8 +72,8 @@
 	});
 
 	function init() {
-		_$pullRequestDiff = $('#pullrequest-diff, #diff, #compare-diff-content, #commit');
-		_$pullRequestDiffCompare = _$pullRequestDiff.find('div#compare, div#changeset-diff.main');
+		_$pullRequestDiff = $('#pullrequest #pullrequest-diff, #branch-detail #compare-diff-content, #commit, #diff');
+		_$pullRequestDiffCompare = $('#pullrequest #compare, #branch-detail #changeset-diff.main, #commit #changeset-diff.main');
 		_$commitFilesSummary = _$pullRequestDiff.find('ul.commit-files-summary');
 		_$diffSections = _$pullRequestDiff.find('section.iterable-item.bb-udiff');
 	}
@@ -289,6 +289,11 @@
 					var $section = $('section[id*="' + sectionId + '"]');
 					$section.show();
 
+					// Set the treeDiff height based on the height of the selected section
+					var height = Math.max($section.height() - 100, 650);
+					_$treeDiff.height(height);
+
+					// Set the url hash for the selected file
 					window.location.hash = fileIdentifier;
 				}
 			});
