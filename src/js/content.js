@@ -509,9 +509,13 @@
 		var $newVersionIndicator = $('#newVersionIndicator');
 		var previousExtensionVersion = _settings.version;
 		var currentExtenstionVersion = _manifestData.version;
-		if (previousExtensionVersion !== currentExtenstionVersion) {
+		if (getMajorVersion(previousExtensionVersion) !== getMajorVersion(currentExtenstionVersion)) {
 			$newVersionIndicator.removeClass('hidden');
 		}
+	}
+
+	function getMajorVersion(version) {
+		return version.match(/\d+.\d+/g)[0];
 	}
 
 	function scrollToPullRequestSection() {

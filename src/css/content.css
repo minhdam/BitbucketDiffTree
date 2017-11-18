@@ -64,11 +64,11 @@
 }
 
 #treeDiff li.isReviewed > a > span.folderIcon {
-	color: #1D8832 !important;
+	/* color: #1D8832 !important; */
 }
 
 #treeDiff li.isReviewed > a > span.folderIcon::before {
-	content: "\f157";
+	content: "\f104";
 }
 
 #treeDiff li.isReviewed > a > span.fileIcon::before {
