@@ -238,20 +238,19 @@
 	function markAsReviewed($icon) {
 		var $node = $icon.closest('li[role=treeitem]');
 		var sFileIdentifier = $node.data('file-identifier').replace('#chg-', '');
-		var bIsReviewed = !$icon.hasClass('aui-iconfont-approve');
+		var bIsReviewed = !$node.hasClass('isReviewed');
 
 		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, function(data) {
 			_oPullRequestFileStatuses = data;
 			updateFileReviewStatus($node, bIsReviewed);
+			updateParentFoldersReviewStatus($node);
 		});
 	}
 
 	function updateFileReviewStatus($node, bIsReviewed) {
 		var $icon = $node.find('.fileIcon');
 		var title = HtmlHelper.getMarkAsReviewedCheckboxTitle(bIsReviewed);
-		$node.toggleClass('isReviewed', bIsReviewed);
-		$icon.toggleClass('aui-iconfont-approve', bIsReviewed);
-		$icon.toggleClass('aui-iconfont-devtools-task-in-progress', !bIsReviewed);
+		setNodeReviewStatus($node, bIsReviewed);
 		$icon.attr('title', title);
 	}
 
@@ -295,19 +294,33 @@
 
 					// Set the url hash for the selected file
 					window.location.hash = fileIdentifier;
+				} else {
+					// Open/close the selected folder
+					_$treeDiff.jstree(true).toggle_node(data.node);
 				}
 			});
 
-		_$treeDiff.on('open_node.jstree',
-			function(event, data) {
-				var childNodes = data.node.children;
-				childNodes.forEach(function(node) {
-					var $node = $('#' + node);
-					var sFileIdentifier = $node.data('file-identifier').replace('#chg-', '');
-					var bIsReviewed = _oPullRequestFileStatuses[sFileIdentifier].isReviewed;
-					updateFileReviewStatus($node, bIsReviewed);
-				}, this);
+		_$treeDiff.on('open_node.jstree', onOpenNode);
+	}
+
+	function onOpenNode(event, data) {
+		var queueChildNodeIds = [];
+
+		data.node.children.forEach(function(nodeId) {
+			queueChildNodeIds.push(nodeId);
+		});
+
+		while (queueChildNodeIds.length) {
+			var childNodeId = queueChildNodeIds.shift();
+			var $childNode = $('#' + childNodeId);
+			var bIsReviewed = getNodeReviewStatus($childNode);
+			updateFileReviewStatus($childNode, bIsReviewed);
+
+			var oChildNode = _$treeDiff.jstree(true).get_node(childNodeId);
+			oChildNode.children.forEach(function(nodeId) {
+				queueChildNodeIds.push(nodeId);
 			});
+		}
 	}
 
 	function buildDiffTree(bIsCompactMode) {
@@ -326,6 +339,7 @@
 			bindDiffTreeEvents();
 			showNewVersionIndicator();
 			navigateToNodeInHash();
+			updateReviewStatusesForAllNodes();
 		});
 	}
 
@@ -458,7 +472,8 @@
 	function initializeJsTree() {
 		_$treeDiff.jstree({
 			core: {
-				multiple: false
+				multiple: false,
+				dblclick_toggle: false
 			},
 
 			plugins: ["sort"],
@@ -593,6 +608,53 @@
 				$commentNode.removeAttr('style');
 			}, 1000);
 		});
+	}
+
+	function updateReviewStatusesForAllNodes() {
+		var $rootNodes = _$treeDiff.find('.jstree-container-ul.jstree-children').children();
+		$rootNodes.each(function() {
+			updateReviewStatusesRecursive($(this));
+		});
+	}
+
+	function updateReviewStatusesRecursive($node) {
+		$node = $($node);
+		if ($node.hasClass('isLeaf')) {
+			return $node.hasClass('isReviewed');
+		}
+
+		var bIsReviewed = true;
+		var $childNodes = $node.find('.jstree-children').children('.jstree-node');
+		$childNodes.each(function() {
+			var bIsChildReviewed = updateReviewStatusesRecursive($(this));
+			bIsReviewed = bIsReviewed && bIsChildReviewed;
+		});
+
+		setNodeReviewStatus($node, bIsReviewed);
+
+		return bIsReviewed;
+	}
+
+	function updateParentFoldersReviewStatus($node) {
+		var $parent = $node.parent().closest('.jstree-node');
+		while ($parent.length > 0) {
+			var bIsReviewed = $parent.find('.jstree-children').children('.jstree-node').not('.isReviewed').length === 0;
+			setNodeReviewStatus($parent, bIsReviewed);
+			
+			$parent = $parent.parent().closest('.jstree-node');
+		}
+	}
+
+	function getNodeReviewStatus($node) {
+		var treeNode = _$treeDiff.jstree(true).get_node($node.attr('id'));
+		return treeNode.data.isReviewed;
+	}
+
+	function setNodeReviewStatus($node, bIsReviewed) {
+		$node.toggleClass('isReviewed', bIsReviewed);
+
+		var treeNode = _$treeDiff.jstree(true).get_node($node.attr('id'));
+		treeNode.data.isReviewed = bIsReviewed;
 	}
 
 })(

@@ -29,7 +29,12 @@
 					className += 'isReviewed ';
 				}
 
-				treeHtml += '<li class="' + className + '" data-file-identifier="' + data.link + '" data-file-name="' + data.name + '">';
+				treeHtml += '<li class="' + className
+					+ '" data-file-identifier="' + data.link
+					+ '" data-file-name="' + data.name
+					+ (data.isLeaf ? '" data-is-reviewed="' + data.bIsReviewed : '')
+					+ '">';
+				
 				if (data.isLeaf) {
 					content =
 						HtmlHelper.buildFileIconHtml(data.bIsReviewed) + '&nbsp;' +
@@ -122,17 +127,16 @@
 		},
 
 		buildFileIconHtml: function(bIsReviewed) {
-			var iconClass = bIsReviewed ? 'aui-iconfont-approve' : 'aui-iconfont-devtools-task-in-progress';
 			var title = HtmlHelper.getMarkAsReviewedCheckboxTitle(bIsReviewed);
-			return '<span class="jstree-node-icon aui-icon aui-icon-small fileIcon reviewed-checkbox ' + iconClass + '" title="' + title + '">File</span>';
+			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-task-in-progress fileIcon reviewed-checkbox" title="' + title + '">File</span>';
 		},
 
 		buildFolderOpenIconHtml: function() {
-			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-folder-open" style="color:#0075B1;">Folder open</span>';
+			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-folder-open folderIcon" style="color:#0075B1;">Folder open</span>';
 		},
 
 		buildFolderCloseIconHtml: function() {
-			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-folder-closed" style="color:#0075B1;">Folder closed</span>';
+			return '<span class="jstree-node-icon aui-icon aui-icon-small aui-iconfont-devtools-folder-closed folderIcon" style="color:#0075B1;">Folder closed</span>';
 		},
 
 		getMarkAsReviewedCheckboxTitle: function(bIsReviewed) {

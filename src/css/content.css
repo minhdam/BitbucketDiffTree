@@ -55,12 +55,24 @@
 	cursor: pointer;
 }
 
-#treeDiff .isReviewed .fileIcon{
+#treeDiff li.isReviewed > a > span.fileIcon {
 	color: #1D8832;
 }
 
-#treeDiff .hasComment .fileIcon{
+#treeDiff li.hasComment > a > span.fileIcon {
 	color: #FDA428;
+}
+
+#treeDiff li.isReviewed > a > span.folderIcon {
+	color: #1D8832 !important;
+}
+
+#treeDiff li.isReviewed > a > span.folderIcon::before {
+	content: "\f157";
+}
+
+#treeDiff li.isReviewed > a > span.fileIcon::before {
+	content: "\f104";
 }
 
 #treeDiff .jstree-anchor {
@@ -129,7 +141,7 @@
     margin-top: 0px !important;
 }
 
-
+/* Resizable panels */
 #diffTreeWrapper {
 	display: flex;
 	flex-direction: row;
@@ -139,7 +151,6 @@
 	xtouch-action: none;
 }
 
-/* Resizable panels */
 #diffTreeContainer {
 	flex: 0 0 auto;
 	width: 400px;
