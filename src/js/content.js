@@ -555,10 +555,10 @@
 	}
 
 	function navigateToNodeInHash() {
-		var commentId = window.location.hash;
-		var $commentNode = $('[data-file-identifier*="' + commentId + '"]');
-		if ($commentNode.length > 0) {
-			navigateToCommentNode($commentNode);
+		var fileId = window.location.hash;
+		var $node = $('li[data-file-identifier*="' + fileId + '"]');
+		if ($node.length > 0) {
+			_$treeDiff.jstree(true).select_node($node);
 		} else {
 			showFirstFile();
 		}
@@ -576,8 +576,10 @@
 	}
 
 	function navigateToCommentNode($commentNode) {
+		if ($commentNode.length === 0) return;
+
 		// Select the file that contains the comment on diff tree
-		var $section = _$pullRequestDiffCompare.find('section.iterable-item.bb-udiff[id*="' + $commentNode.data('file-identifier').replace('#', '') + '"]');
+		var $section = $commentNode.closest('section.iterable-item.bb-udiff');
 		var refUrl = $section.attr('id');
 		var $treeNode = _$treeDiff.find('li.isLeaf[data-file-identifier*="' + refUrl + '"]');
 
@@ -589,6 +591,7 @@
 
 	function scrollToCommentNode($commentNode) {
 		$commentNode = $($commentNode);
+		if ($commentNode.length === 0) return;
 
 		// Calculate the scroll offset
 		var elOffset = $commentNode.offset().top;
