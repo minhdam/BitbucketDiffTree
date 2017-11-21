@@ -4,6 +4,7 @@
 	HtmlHelper,
 	PullRequestHelper,
 	LocalStorageHelper,
+	TreeHelper,
 	NewCommentObserver,
 	FileChangesObserver) {
 
@@ -26,6 +27,7 @@
 	var _interval;
 
 	var _treeObject;
+	var _treeHelper;
 
 	var _oPullRequestModel = new PullRequestModel();
 
@@ -223,11 +225,11 @@
 	}
 
 	function expandAllFolders() {
-		_$treeDiff.jstree("open_all");
+		_treeHelper.expandAllNodes();
 	}
 
 	function collapseAllFolders() {
-		_$treeDiff.jstree("close_all");
+		_treeHelper.collapseAllNodes();
 	}
 
 	function saveCompactModeSetting(useCompactMode) {
@@ -296,7 +298,7 @@
 					window.location.hash = fileIdentifier;
 				} else {
 					// Open/close the selected folder
-					_$treeDiff.jstree(true).toggle_node(data.node);
+					_treeHelper.toggleNode(data.node);
 				}
 			});
 
@@ -316,7 +318,7 @@
 			var bIsReviewed = getNodeReviewStatus($childNode);
 			updateFileReviewStatus($childNode, bIsReviewed);
 
-			var oChildNode = _$treeDiff.jstree(true).get_node(childNodeId);
+			var oChildNode = _treeHelper.getNode(childNodeId);
 			oChildNode.children.forEach(function(nodeId) {
 				queueChildNodeIds.push(nodeId);
 			});
@@ -375,7 +377,7 @@
 						item.data.link = link;
 						item.data.fileStatus = getFileStatus($self);
 						item.data.commentCount = getFileCommentCount($self);
-						item.data.bIsReviewed = _oPullRequestFileStatuses[fileName] && _oPullRequestFileStatuses[fileName].isReviewed;
+						item.data.bIsReviewed = _oPullRequestFileStatuses[fileName] !== undefined && _oPullRequestFileStatuses[fileName].isReviewed;
 					}
 
 					tempObject = tempObject.children[folder];
@@ -453,6 +455,8 @@
 		_$diffTreeContainer = $('#diffTreeContainer');
 		_$treeDiff = $('#treeDiff');
 
+		_treeHelper = new TreeHelper(_$treeDiff);
+
 		if (_settings.diffTreeWidth) {
 			_$diffTreeContainer.width(_settings.diffTreeWidth);
 		}
@@ -495,13 +499,13 @@
 		});
 
 		// Expand all nodes
-		_$treeDiff.jstree("open_all");
+		expandAllFolders();
 	}
 
 	function showFirstFile() {
 		var $firstFileNode = _$treeDiff.find('li.jstree-node.isLeaf:eq(0)');
 		if ($firstFileNode.length > 0) {
-			_$treeDiff.jstree(true).select_node($firstFileNode);
+			_treeHelper.selectNode($firstFileNode);
 		}
 	}
 
@@ -558,7 +562,8 @@
 		var fileId = window.location.hash;
 		var $node = $('li[data-file-identifier*="' + fileId + '"]');
 		if ($node.length > 0) {
-			_$treeDiff.jstree(true).select_node($node);
+			scrollToPullRequestSection();
+			_treeHelper.selectNode($node);
 		} else {
 			showFirstFile();
 		}
@@ -583,8 +588,8 @@
 		var refUrl = $section.attr('id');
 		var $treeNode = _$treeDiff.find('li.isLeaf[data-file-identifier*="' + refUrl + '"]');
 
-		_$treeDiff.jstree(true).deselect_all();
-		_$treeDiff.jstree(true).select_node($treeNode);
+		_treeHelper.deselectAllNodes();
+		_treeHelper.selectNode($treeNode);
 
 		scrollToCommentNode($commentNode);
 	}
@@ -653,14 +658,14 @@
 	}
 
 	function getNodeReviewStatus($node) {
-		var treeNode = _$treeDiff.jstree(true).get_node($node.attr('id'));
+		var treeNode = _treeHelper.getNode($node);
 		return treeNode.data.isReviewed;
 	}
 
 	function setNodeReviewStatus($node, bIsReviewed) {
 		$node.toggleClass('isReviewed', bIsReviewed);
 
-		var treeNode = _$treeDiff.jstree(true).get_node($node.attr('id'));
+		var treeNode = _treeHelper.getNode($node);
 		treeNode.data.isReviewed = bIsReviewed;
 	}
 
@@ -670,5 +675,6 @@
 	BDT.Helpers.HtmlHelper,
 	BDT.Helpers.PullRequestHelper,
 	BDT.Helpers.LocalStorageHelper,
+	BDT.Helpers.TreeHelper,
 	BDT.DomObservers.NewCommentObserver,
 	BDT.DomObservers.FileChangesObserver);

@@ -1,7 +1,7 @@
 {
 	"name": "Bitbucket Diff Tree",
 	"description": "Extension to display diff tree for Bitbucket",
-	"version": "1.4.2",
+	"version": "1.4.4",
 	"manifest_version": 2,
 
 	"background": {
@@ -34,6 +34,7 @@
 				"js/helpers/htmlHelper.js",
 				"js/helpers/pullRequestHelper.js",
 				"js/helpers/localStorageHelper.js",
+				"js/helpers/treeHelper.js",
 
 				"js/observers/newCommentObserver.js",
 				"js/observers/fileChangesObserver.js",
