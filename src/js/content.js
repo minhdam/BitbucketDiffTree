@@ -74,8 +74,8 @@
 	});
 
 	function init() {
-		_$pullRequestDiff = $('#pullrequest #pullrequest-diff, #branch-detail #compare-diff-content, #commit, #create-pullrequest #diff, #branch-compare #compare-diff-content');
-		_$pullRequestDiffCompare = $('#pullrequest #compare, #branch-detail #changeset-diff.main, #commit #changeset-diff.main, #create-pullrequest #changeset-diff.main, #branch-compare #changeset-diff.main');
+		_$pullRequestDiff = $('#pullrequest #pullrequest-diff, #branch-detail #compare-diff-content, #commit, #create-pullrequest #diff, #update-pullrequest #diff, #branch-compare #compare-diff-content');
+		_$pullRequestDiffCompare = $('#pullrequest #compare, #branch-detail #changeset-diff.main, #commit #changeset-diff.main, #create-pullrequest #changeset-diff.main, #update-pullrequest #changeset-diff.main, #branch-compare #changeset-diff.main');
 		_$commitFilesSummary = _$pullRequestDiff.find('ul.commit-files-summary');
 		_$diffSections = _$pullRequestDiff.find('section.iterable-item.bb-udiff');
 	}
