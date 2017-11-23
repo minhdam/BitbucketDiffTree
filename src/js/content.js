@@ -122,10 +122,16 @@
 			_$commitFilesSummary.hide();
 			_$diffSections.hide();
 
-			buildDiffTree(_settings.useCompactMode);
-		}
+			buildDiffTreeAsync(_settings.useCompactMode, function() {
+				bindDiffTreeEvents();
+				showNewVersionIndicator();
+				navigateToNodeInHash();
 
-		if (!bIsOnLoad) {
+				if (!bIsOnLoad) {
+					scrollToPullRequestSection();
+				}
+			});
+		} else if (!bIsOnLoad) {
 			scrollToPullRequestSection();
 		}
 
@@ -213,7 +219,7 @@
 		var useCompactMode = _settings.useCompactMode || false;
 		useCompactMode = !useCompactMode;
 
-		buildDiffTree(useCompactMode);
+		buildDiffTreeAsync(useCompactMode);
 		saveCompactModeSetting(useCompactMode);
 
 		var title = useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders';
@@ -292,10 +298,10 @@
 
 					// Set the treeDiff height based on the height of the selected section
 					var height = Math.max($section.height() - 100, 650);
-					_$treeDiff.height(height);
+					//_$treeDiff.height(height);
 
 					// Set the url hash for the selected file
-					window.location.hash = fileIdentifier;
+					//window.location.hash = fileIdentifier;
 				} else {
 					// Open/close the selected folder
 					_treeHelper.toggleNode(data.node);
@@ -325,12 +331,13 @@
 		}
 	}
 
-	function buildDiffTree(bIsCompactMode) {
+	function buildDiffTreeAsync(bIsCompactMode, fnCallback) {
 		bIsCompactMode = bIsCompactMode || false;
 		
 		LocalStorageHelper.getPullRequestStatus(_oPullRequestModel, function(data) {
 			_oPullRequestFileStatuses = data;
 			_treeObject = populateDiffTreeObject();
+
 			if (bIsCompactMode) {
 				_treeObject = compactEmptyFoldersDiffTreeObject(_treeObject);
 			}
@@ -338,10 +345,11 @@
 			attachDiffTreeHtml(_treeObject);
 			initializeJsTree();
 			bindJsTreeEvents();
-			bindDiffTreeEvents();
-			showNewVersionIndicator();
-			navigateToNodeInHash();
 			updateReviewStatusesForAllNodes();
+			
+			if (fnCallback) {
+				fnCallback();
+			}
 		});
 	}
 
@@ -441,6 +449,8 @@
 		diffTreeContainer += HtmlHelper.buildTreeHtml(oTreeObject);
 		diffTreeContainer += '</div>'; // end of #treeDiff
 
+		diffTreeContainer += '<div class="splitter-horizontal"></div>';
+
 		diffTreeContainer += '</div>'; // end of #difTreeContainer
 
 		var $diffTreeWrapper = $('<div id="diffTreeWrapper" />');
@@ -461,6 +471,10 @@
 			_$diffTreeContainer.width(_settings.diffTreeWidth);
 		}
 
+		if (_settings.diffTreeHeight) {
+			_$treeDiff.height(_settings.diffTreeHeight);
+		}
+
 		// Allow resizing the diff tree panel
 		_$diffTreeContainer.resizable({
 			handleSelector: ".splitter",
@@ -469,6 +483,16 @@
 				var width = _$diffTreeContainer.width();
 				LocalStorageHelper.setDiffTreeWidth(width);
 				_settings.diffTreeWidth = width;
+			}
+		});
+
+		_$treeDiff.resizable({
+			handleSelector: ".splitter-horizontal",
+			resizeWidth: false,
+			onDragEnd: function(e, $el, opt) {
+				var height = _$treeDiff.height();
+				LocalStorageHelper.setDiffTreeHeight(height);
+				_settings.diffTreeHeight = height;
 			}
 		});
 	}
@@ -562,7 +586,6 @@
 		var fileId = window.location.hash;
 		var $node = $('li[data-file-identifier*="' + fileId + '"]');
 		if ($node.length > 0) {
-			scrollToPullRequestSection();
 			_treeHelper.selectNode($node);
 		} else {
 			showFirstFile();

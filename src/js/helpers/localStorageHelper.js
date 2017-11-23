@@ -8,7 +8,8 @@
 				'enableAlways', 
 				'useCompactMode', 
 				'version', 
-				'diffTreeWidth'
+				'diffTreeWidth',
+				'diffTreeHeight'
 			], function(settings) {
 				if (fnCallback) {
 					fnCallback.call(this, settings);
@@ -34,6 +35,14 @@
 
 		setDiffTreeWidth: function(diffTreeWidth, fnCallback) {
 			chrome.storage.sync.set({ 'diffTreeWidth': diffTreeWidth }, function() {
+				if (fnCallback) {
+					fnCallback.call(this);
+				}
+			});
+		},
+
+		setDiffTreeHeight: function(diffTreeHeight, fnCallback) {
+			chrome.storage.sync.set({ 'diffTreeHeight': diffTreeHeight }, function() {
 				if (fnCallback) {
 					fnCallback.call(this);
 				}

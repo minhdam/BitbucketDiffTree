@@ -3,137 +3,144 @@
 	margin-top: 20px;
 }
 
-#diffTreeContainer {
+#diffTreeWrapper #diffTreeContainer {
 	width: 30%;
-	background-color: #f5f5f5;
-	border: 1px solid #ccc;
+	background-color: #ffffff;
+	border-top: 1px solid #ccc;
 	/*border-radius: 6px 0 0 6px; */
 }
 
-#diffTreeContainer.collapsed {
+#diffTreeWrapper #diffTreeContainer.collapsed {
 	width: 55px;
 }
 
-#treeDiff {
+#diffTreeWrapper #treeDiff {
 	height: 650px;
 	overflow: auto;
+	background-color: #f5f5f5;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
-#treeDiff .jstree-icon.jstree-themeicon {
+#diffTreeWrapper #treeDiff .jstree-icon.jstree-themeicon {
 	display: none;
 }
 
-#treeDiff .isLeaf {
+#diffTreeWrapper treeDiff .isLeaf {
 	font-style: normal;
 	/*font-weight: bold;*/
 }
 
-#treeDiff .isLeaf.already-reviewed {
+#diffTreeWrapper #treeDiff .isLeaf.already-reviewed {
 	font-weight: normal;
 }
 
-#treeDiff .count-badge {
+#diffTreeWrapper #treeDiff .count-badge {
 	background: #f5f5f5;
 	padding-left: 3px;
 }
 
-#treeDiff .jstree-anchor .count-badge .count {
+#diffTreeWrapper #treeDiff .jstree-anchor .count-badge .count {
 	padding-left: 3px;
 }
 
-#treeDiff .jstree-anchor:hover .count-badge {
+#diffTreeWrapper #treeDiff .jstree-anchor:hover .count-badge {
 	background: rgb(231, 244, 249);
 }
 
-#treeDiff .jstree-anchor.jstree-clicked .count-badge {
+#diffTreeWrapper #treeDiff .jstree-anchor.jstree-clicked .count-badge {
 	background: rgb(190, 235, 255);
 	line-height: 20px;
 }
 
-#treeDiff .fileIcon {
+#diffTreeWrapper #treeDiff .fileIcon {
 	color: #4B6884;
 	cursor: pointer;
 }
 
-#treeDiff li.isReviewed > a > span.fileIcon {
+#diffTreeWrapper #treeDiff li.isReviewed > a > span.fileIcon {
 	color: #1D8832;
 }
 
-#treeDiff li.hasComment > a > span.fileIcon {
+#diffTreeWrapper #treeDiff li.hasComment > a > span.fileIcon {
 	color: #FDA428;
 }
 
-#treeDiff li.isReviewed > a > span.folderIcon {
+#diffTreeWrapper #treeDiff li.isReviewed > a > span.folderIcon {
 	/* color: #1D8832 !important; */
 }
 
-#treeDiff li.isReviewed > a > span.folderIcon::before {
+#diffTreeWrapper #treeDiff li.isReviewed > a > span.folderIcon::before {
 	content: "\f104";
 }
 
-#treeDiff li.isReviewed > a > span.fileIcon::before {
+##diffTreeWrapper treeDiff li.isReviewed > a > span.fileIcon::before {
 	content: "\f104";
 }
 
-#treeDiff .jstree-anchor {
+#diffTreeWrapper #treeDiff .jstree-anchor {
 	cursor: default;
 }
 
-.diff-tree-aside section.iterable-item.bb-udiff {
+#diffTreeWrapper .diff-tree-aside section.iterable-item.bb-udiff {
 	margin-top: 0;
 }
 
-.diff-tree-aside .diff-container {
+#diffTreeWrapper .diff-tree-aside .diff-container {
 	margin-left: 0;
 	padding-left: 0;
 }
 
-#diffTreeContainer .dt-actions {
+#diffTreeWrapper #diffTreeContainer .dt-actions {
 	height: 40px;
+	background-color: #f5f5f5;
 	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
 }
 
-#diffTreeContainer .dt-actions .dt-action-group {
+#diffTreeWrapper #diffTreeContainer .dt-actions .dt-action-group {
 	border-left: 1px solid #ccc;
 	padding: 0 5px;
 	display: inline-block;
 	float: right;
 }
 
-#diffTreeContainer .dt-actions .dt-action-group:last-child {
+#diffTreeWrapper #diffTreeContainer .dt-actions .dt-action-group:last-child {
 	border-left: none;
 }
 
-#diffTreeContainer .dt-actions .dt-action-item {
+#diffTreeWrapper #diffTreeContainer .dt-actions .dt-action-item {
 	width: 20px;
 	line-height: 40px;
 	color: #707070;
 	display: inline-block;
 }
 
-#diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item {
+#diffTreeWrapper #diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item {
 
 }
 
-#diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item .aui-icon:before {
+#diffTreeWrapper #diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item .aui-icon:before {
 	font-size: 14px;
 	font-weight: bold;
 }
 
-#diffTreeContainer .dt-actions .dt-action-item .aui-icon:before {
+#diffTreeWrapper #diffTreeContainer .dt-actions .dt-action-item .aui-icon:before {
 	font-size: 16px;
 }
 
-#diffTreeContainer #newVersionIndicator span.aui-icon:before {
+#diffTreeWrapper #diffTreeContainer #newVersionIndicator span.aui-icon:before {
 	font-size: 14px;
 }
 
-#compare {
+#diffTreeWrapper #compare {
 	/* tab-size: 4; */
 }
 
-#compare .refract-container .addition pre.source ins,
-#compare .refract-container .deletion pre.source del {
+#diffTreeWrapper #compare .refract-container .addition pre.source ins,
+#diffTreeWrapper #compare .refract-container .deletion pre.source del {
     display: inline !important;
 }
 
@@ -151,7 +158,7 @@
 	xtouch-action: none;
 }
 
-#diffTreeContainer {
+#diffTreeWrapper #diffTreeContainer {
 	flex: 0 0 auto;
 	width: 400px;
 	min-height: 200px;
@@ -168,7 +175,22 @@
 	cursor: col-resize;  
 }
 
-#diffTreeWrapper .splitter:hover {
+#diffTreeWrapper .splitter-horizontal {
+	flex: 0 0 auto;
+	height: 10px;
+	background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/hsizegrip.png) center center no-repeat #ccc;
+	cursor: row-resize;
+}
+
+#diffTreeWrapper #treeDiff {
+	flex: 0 0 auto;
+	/* only manually resize */
+	min-height: 200px;
+	white-space: nowrap;
+}
+
+#diffTreeWrapper .splitter:hover,
+#diffTreeWrapper .splitter-horizontal:hover {
 	background-color: #ccc;
 }
 
