@@ -75,7 +75,7 @@
 	content: "\f104";
 }
 
-##diffTreeWrapper treeDiff li.isReviewed > a > span.fileIcon::before {
+#diffTreeWrapper #treeDiff li.isReviewed > a > span.fileIcon::before {
 	content: "\f104";
 }
 
