@@ -583,12 +583,15 @@
 	}
 
 	function navigateToNodeInHash() {
-		var fileId = window.location.hash;
-		var $node = $('li[data-file-identifier*="' + fileId + '"]');
-		if ($node.length > 0) {
+		var hash = window.location.hash;
+		showFirstFile();
+
+		if (hash.indexOf('#chg-') === 0) { // file nagivation
+			var $node = $('li[data-file-identifier*="' + hash + '"]');
 			_treeHelper.selectNode($node);
-		} else {
-			showFirstFile();
+		} else if (hash.indexOf('#comment-') === 0) { // comment navigation
+			var $comment = $(hash);
+			navigateToCommentNode($comment);
 		}
 	}
 

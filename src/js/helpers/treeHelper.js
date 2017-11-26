@@ -11,7 +11,7 @@
 		function getNodeId(obj) {
 			var nodeId;
 			
-			if (obj instanceof jQuery) {
+			if (obj && obj instanceof jQuery) {
 				nodeId = obj.attr('id');
 			} else {
 				nodeId = obj;
