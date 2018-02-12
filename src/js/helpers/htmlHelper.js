@@ -80,7 +80,24 @@
 							'<a id="btnCollapseAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-up" title="Collapse all folders">Collapse all folders</span></a>' +
 							'<a id="btnExpandAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-down" title="Expand all folders">Expand all folders</span></a>' +
 						'</div>' +
-						'<div style="padding: 10px;">' +
+						'<div style="padding: 10px; width: 100%;">' +
+							// 'v' + manifestData.version + '&nbsp;' +
+							// '<a id="newVersionIndicator" class="hidden" target="_blank" href="https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf" title="Please click here for the new release notes.">' + 
+							// 	'<span class="aui-icon aui-icon-small aui-iconfont-unstar">New release</span>' +
+							// '</a>' +
+							'<div class="searchBox">' +
+								'<input type="text" id="searchBox" placeholder="Search"/>' +
+								'<span id="clearSearch" class="aui-icon aui-icon-small aui-iconfont-remove-label" />' +
+							'</div>' +
+						'</div>' +
+				'</div>';
+		},
+
+		buildDiffTreeFooterPanelHtml: function() {
+			var manifestData = chrome.runtime.getManifest();
+
+			return '<div class="dt-actions">' +
+						'<div style="padding: 10px; width: 100%;">' +
 							'v' + manifestData.version + '&nbsp;' +
 							'<a id="newVersionIndicator" class="hidden" target="_blank" href="https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf" title="Please click here for the new release notes.">' + 
 								'<span class="aui-icon aui-icon-small aui-iconfont-unstar">New release</span>' +

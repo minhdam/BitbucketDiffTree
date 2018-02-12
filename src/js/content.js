@@ -202,6 +202,18 @@
 		$(document).on('click', '#newVersionIndicator', function(e) {
 			markAsAwarenessOfNewVersion();
 		});
+
+		$(document).off('keyup', '#searchBox');
+		$(document).on('keyup', '#searchBox', function(e) {
+			var searchText = $(this).val();
+			_$treeDiff.jstree('search', searchText);
+		});
+
+		$(document).off('click', '#clearSearch');
+		$(document).on('click', '#clearSearch', function(e) {
+			_$treeDiff.jstree('clear_search');
+			$('#searchBox').val('').focus();
+		});
 	}
 
 	function minimizeDiffTree() {
@@ -451,6 +463,8 @@
 
 		diffTreeContainer += '<div class="splitter-horizontal"></div>';
 
+		diffTreeContainer += HtmlHelper.buildDiffTreeFooterPanelHtml();
+
 		diffTreeContainer += '</div>'; // end of #difTreeContainer
 
 		var $diffTreeWrapper = $('<div id="diffTreeWrapper" />');
@@ -504,7 +518,7 @@
 				dblclick_toggle: false
 			},
 
-			plugins: ["sort"],
+			plugins: ["sort", "search"],
 
 			sort: function(a, b) {
 				var node1 = this.get_node(a);
@@ -519,7 +533,12 @@
 
 				//Sort by name
 				return node1.data.fileName.toLowerCase() > node2.data.fileName.toLowerCase() ? 1 : -1;
-			}
+			},
+
+			search: {
+				show_only_matches: true,
+				show_only_matches_children: true,
+			},
 		});
 
 		// Expand all nodes
