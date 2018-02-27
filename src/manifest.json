@@ -25,12 +25,14 @@
 				"libs/jquery.min.js",
 				"libs/jstree/jstree.min.js",
 				"libs/jquery-resizable.js",
+				"libs/jquery.md5.js",
 
 				"js/namespaces.js",
 				
 				"js/models/treeNodeModel.js",
 				"js/models/pullRequestModel.js",
 				
+				"js/helpers/hashingHelper.js",
 				"js/helpers/htmlHelper.js",
 				"js/helpers/pullRequestHelper.js",
 				"js/helpers/localStorageHelper.js",
