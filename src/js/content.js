@@ -588,7 +588,7 @@
 	}
 
 	function getMajorVersion(version) {
-		return version.match(/\d+.\d+/g)[0];
+		return version ? version.match(/\d+.\d+/g)[0] : '';
 	}
 
 	function scrollToPullRequestSection() {

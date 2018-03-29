@@ -12,7 +12,7 @@
 			$('#btnEnableAlways')
 				.on('click',
 					function() {
-						chrome.storage.sync.set({ 'enableAlways': true },
+						chrome.storage.local.set({ 'enableAlways': true },
 							function() {
 								enableDiffTree();
 							});
@@ -21,7 +21,7 @@
 			$('#btnDisable')
 				.on('click',
 					function() {
-						chrome.storage.sync.set({ 'enableAlways': false },
+						chrome.storage.local.set({ 'enableAlways': false },
 							function() {
 								disableDiffTree();
 							});

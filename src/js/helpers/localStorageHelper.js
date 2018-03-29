@@ -4,7 +4,7 @@
 	var LocalStorageHelper = {
 
 		getAllSettings: function(fnCallback) {
-			chrome.storage.sync.get([
+			chrome.storage.local.get([
 				'enableAlways', 
 				'useCompactMode', 
 				'version', 
@@ -18,7 +18,7 @@
 		},
 
 		setUseCompactModeSetting: function(bUseCompactMode, fnCallback) {
-			chrome.storage.sync.set({ 'useCompactMode': bUseCompactMode }, function() {
+			chrome.storage.local.set({ 'useCompactMode': bUseCompactMode }, function() {
 				if (fnCallback) {
 					fnCallback.call(this);
 				}
@@ -26,7 +26,7 @@
 		},
 
 		setVersionSetting: function(version, fnCallback) {
-			chrome.storage.sync.set({ 'version': version }, function() {
+			chrome.storage.local.set({ 'version': version }, function() {
 				if (fnCallback) {
 					fnCallback.call(this);
 				}
@@ -34,7 +34,7 @@
 		},
 
 		setDiffTreeWidth: function(diffTreeWidth, fnCallback) {
-			chrome.storage.sync.set({ 'diffTreeWidth': diffTreeWidth }, function() {
+			chrome.storage.local.set({ 'diffTreeWidth': diffTreeWidth }, function() {
 				if (fnCallback) {
 					fnCallback.call(this);
 				}
@@ -42,7 +42,7 @@
 		},
 
 		setDiffTreeHeight: function(diffTreeHeight, fnCallback) {
-			chrome.storage.sync.set({ 'diffTreeHeight': diffTreeHeight }, function() {
+			chrome.storage.local.set({ 'diffTreeHeight': diffTreeHeight }, function() {
 				if (fnCallback) {
 					fnCallback.call(this);
 				}
@@ -63,7 +63,7 @@
 					+ '_prid_' + oPullRequestModel.pullRequestId 
 					+ '_repo_' + oPullRequestModel.repoFullSlug;
 
-			chrome.storage.sync.get(key, function(data) { 
+			chrome.storage.local.get(key, function(data) { 
 				/* data is a json object of
 					{
 						key: { 
@@ -85,7 +85,7 @@
 					+ '_prid_' + oPullRequestModel.pullRequestId 
 					+ '_repo_' + oPullRequestModel.repoFullSlug;
 
-			//chrome.storage.sync.remove(key);
+			//chrome.storage.local.remove(key);
 
 			LocalStorageHelper.getPullRequestStatus(oPullRequestModel, function(oData) {
 				if (!oData[sFileIdentifier]) {
@@ -101,7 +101,14 @@
 
 				var obj = {};
 				obj[key] = oData;
-				chrome.storage.sync.set(obj, function() {
+				chrome.storage.local.set(obj, function() {
+					if (chrome.runtime.lastError)
+					{
+							/* error */
+							console.log(chrome.runtime.lastError.message);
+							return;
+					}
+	
 					if (fnCallback) {
 						fnCallback.call(this, oData);
 					}
