@@ -39,6 +39,9 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 ### v1.4:
 * Allow resizing the diff tree
 
+### v1.5:
+* Allow searching files and folders in the diff tree
+
 ## How to install
 - Chrome webstore: https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf
 
