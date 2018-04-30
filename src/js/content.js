@@ -395,7 +395,7 @@
 					var item = tempObject.children[folder];
 
 					if (!item) {
-						item = tempObject.children[folder] = new TreeNodeModel(folder, index + 1);
+						item = tempObject.children[folder] = new TreeNodeModel(decodeURI(folder), index + 1);
 
 						if (index === maxLevel - 1) {
 							tempObject.data.fileCount++;
