@@ -1,6 +1,7 @@
 (function (
 	TreeNodeModel,
 	PullRequestModel,
+	HashingHelper,
 	HtmlHelper,
 	PullRequestHelper,
 	LocalStorageHelper,
@@ -255,12 +256,24 @@
 		_settings.useCompactMode = useCompactMode;
 	}
 
+	function getContentHash(sFileIdentifier) {
+		var sDiffContentParentSelector = '.bb-udiff[data-identifier="' + sFileIdentifier + '"]'
+		var sDiffContent = $(sDiffContentParentSelector).find('.udiff-line:not(.common) .source').toArray().map(d => d.textContent).join('\n');
+
+		return HashingHelper.getHash(sDiffContent);
+	}
+
 	function markAsReviewed($icon) {
 		var $node = $icon.closest('li[role=treeitem]');
 		var sFileIdentifier = $node.data('file-identifier').replace('#chg-', '');
 		var bIsReviewed = !$node.hasClass('isReviewed');
 
-		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, function(data) {
+		var sContentHash = undefined;
+		if (bIsReviewed) {
+			sContentHash = getContentHash(sFileIdentifier)
+		}
+
+		LocalStorageHelper.setPullRequestStatus(_oPullRequestModel, sFileIdentifier, bIsReviewed, sContentHash, function(data) {
 			_oPullRequestFileStatuses = data;
 			updateFileReviewStatus($node, bIsReviewed);
 			updateParentFoldersReviewStatus($node);
@@ -393,11 +406,24 @@
 
 					// Leaf node which contains file name
 					if (index === maxLevel - 1) {
+						var bIsReviewed = _oPullRequestFileStatuses[fileName] !== undefined && _oPullRequestFileStatuses[fileName].isReviewed;
+						if (bIsReviewed) {
+							// if the file has been marked as reviewed, check whether its contents have actually changed.
+							var reviewedHash = _oPullRequestFileStatuses[fileName] !== undefined && _oPullRequestFileStatuses[fileName].contentHash;
+							var currentContentHash = getContentHash(fileName)
+
+							if (reviewedHash !== currentContentHash) {
+								// the content hash is different. This means that the file has actually
+								// changed since it was last reviewed, so we unset the "reviewed" status.
+								bIsReviewed = false;
+							}
+						}
+
 						item.data.isLeaf = true;
 						item.data.link = link;
 						item.data.fileStatus = getFileStatus($self);
 						item.data.commentCount = getFileCommentCount($self);
-						item.data.bIsReviewed = _oPullRequestFileStatuses[fileName] !== undefined && _oPullRequestFileStatuses[fileName].isReviewed;
+						item.data.bIsReviewed = bIsReviewed;
 					}
 
 					tempObject = tempObject.children[folder];
@@ -717,6 +743,7 @@
 })(
 	BDT.Models.TreeNodeModel,
 	BDT.Models.PullRequestModel,
+	BDT.Helpers.HashingHelper,
 	BDT.Helpers.HtmlHelper,
 	BDT.Helpers.PullRequestHelper,
 	BDT.Helpers.LocalStorageHelper,

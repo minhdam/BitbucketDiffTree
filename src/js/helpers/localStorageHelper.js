@@ -80,7 +80,7 @@
 			});
 		},
 
-		setPullRequestStatus: function(oPullRequestModel, sFileIdentifier, bValue, fnCallback) {
+		setPullRequestStatus: function(oPullRequestModel, sFileIdentifier, bValue, sContentHash, fnCallback) {
 			var key = 'userid_' + oPullRequestModel.userId 
 					+ '_prid_' + oPullRequestModel.pullRequestId 
 					+ '_repo_' + oPullRequestModel.repoFullSlug;
@@ -93,6 +93,11 @@
 				}
 
 				oData[sFileIdentifier].isReviewed = bValue;
+
+				if (sContentHash !== undefined) {
+					// only save the hash if it was provided
+					oData[sFileIdentifier].contentHash = sContentHash;
+				}
 
 				var obj = {};
 				obj[key] = oData;
