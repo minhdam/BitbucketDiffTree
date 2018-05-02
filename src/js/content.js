@@ -317,7 +317,7 @@
 					_$diffSections.hide();
 
 					// Show the selected section
-					var sectionId = fileIdentifier.replace('#', '').replace(/%20/g, ' ');
+					var sectionId = decodeURIComponent(fileIdentifier.replace('#', ''));
 					var $section = $('section[id*="' + sectionId + '"]');
 					$section.show();
 
@@ -395,7 +395,7 @@
 					var item = tempObject.children[folder];
 
 					if (!item) {
-						item = tempObject.children[folder] = new TreeNodeModel(folder, index + 1);
+						item = tempObject.children[folder] = new TreeNodeModel(decodeURI(folder), index + 1);
 
 						if (index === maxLevel - 1) {
 							tempObject.data.fileCount++;
