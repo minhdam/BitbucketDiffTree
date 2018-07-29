@@ -25,19 +25,19 @@
 					className += 'hasComment ';
 				}
 
-				if (data.bIsReviewed) {
+				if (data.isReviewed) {
 					className += 'isReviewed ';
 				}
 
 				treeHtml += '<li class="' + className
 					+ '" data-file-identifier="' + data.link
 					+ '" data-file-name="' + data.name
-					+ (data.isLeaf ? '" data-is-reviewed="' + data.bIsReviewed : '')
+					+ (data.isLeaf ? '" data-is-reviewed="' + data.isReviewed : '')
 					+ '">';
 				
 				if (data.isLeaf) {
 					content =
-						HtmlHelper.buildFileIconHtml(data.bIsReviewed) + '&nbsp;' +
+						HtmlHelper.buildFileIconHtml(data.isReviewed) + '&nbsp;' +
 						HtmlHelper.buildLozengeFileStatusHtml(data.fileStatus) + '&nbsp;' +
 						data.name + '&nbsp' +
 						HtmlHelper.buildCommentCountBadgeHtml(data.commentCount);
@@ -66,31 +66,53 @@
 			
 		},
 
-		buildDiffTreeActionsPanelHtml: function(bUseCompactMode) {
-			bUseCompactMode = bUseCompactMode || false;
-			var manifestData = chrome.runtime.getManifest();
+		/**
+		 * @param {object} options An object of 
+		 * {
+		 * 		bUseCompactMode: bool, 
+		 * 		bShowFilesReviewed: bool, 
+		 * 		bShowFilesUnreviewed: bool, 
+		 * 		bShowFilesCommented: bool,
+		 * }
+		 */
+		buildDiffTreeActionsPanelHtml: function(options) {
+			var defaultOptions = {
+				bUseCompactMode: false, 
+				bShowFilesReviewed: false, 
+				bShowFilesUnreviewed: false, 
+				bShowFilesCommented: false,
+			};
 
-			return '<div class="dt-actions">' +
+			options = $.extend({}, defaultOptions, options);
+
+			var $html =  $('' +
+				'<div class="dt-actions">' +
 						'<div class="dt-action-group">' +
-							//'<a id="btnMinimizeDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-arrows-left" title="Minimize diff tree">Minimize diff tree</span></a>' +
 							'<a id="btnRemoveDiffTree" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-remove-label" title="Remove diff tree">Remove diff tree</span></a>' +
 						'</div>' +
 						'<div class="dt-action-group dt-main-actions">' +
-							'<a id="btnCompactEmptyFoldersToggle" href="#" class="dt-action-item" title="' + (bUseCompactMode ? 'Uncompact empty folders' : 'Compact empty folders') + '"><span class="aui-icon aui-icon-small ' + (bUseCompactMode ? 'aui-iconfont-focus' : 'aui-iconfont-unfocus') + '">Settings</span></a>' +
+							'<a id="btnCompactEmptyFoldersToggle" href="#" class="dt-action-item" title="' + (options.bUseCompactMode ? 'Uncompact empty folders' : 'Compact empty folders') + '"><span class="aui-icon aui-icon-small ' + (options.bUseCompactMode ? 'aui-iconfont-focus' : 'aui-iconfont-unfocus') + '">Settings</span></a>' +
 							'<a id="btnCollapseAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-up" title="Collapse all folders">Collapse all folders</span></a>' +
 							'<a id="btnExpandAllFolders" href="#" class="dt-action-item"><span class="aui-icon aui-icon-small aui-iconfont-down" title="Expand all folders">Expand all folders</span></a>' +
 						'</div>' +
+						'<div class="dt-action-group dt-main-actions">' +
+							'<a id="btnShowFilesReviewed" href=""#" class="dt-action-item" title="Show files reviewed"><span class="aui-icon aui-icon-small aui-iconfont-approve"></span></a>' +
+							'<a id="btnShowFilesUnreviewed" href=""#" class="dt-action-item" title="Show files unreviewed"><span class="aui-icon aui-icon-small aui-iconfont-devtools-task-in-progress"></span></a>' +
+							'<a id="btnShowFilesCommented" href=""#" class="dt-action-item" title="Show files commented"><span class="aui-icon aui-icon-small aui-iconfont-devtools-file-commented"></span></a>' +
+						'</div>' +
 						'<div style="padding: 10px; width: 100%;">' +
-							// 'v' + manifestData.version + '&nbsp;' +
-							// '<a id="newVersionIndicator" class="hidden" target="_blank" href="https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf" title="Please click here for the new release notes.">' + 
-							// 	'<span class="aui-icon aui-icon-small aui-iconfont-unstar">New release</span>' +
-							// '</a>' +
 							'<div class="searchBox">' +
 								'<input type="text" id="searchBox" placeholder="Search"/>' +
 								'<span id="clearSearch" class="aui-icon aui-icon-small aui-iconfont-remove-label" />' +
 							'</div>' +
 						'</div>' +
-				'</div>';
+				'</div>');
+
+			$html.find('#btnShowFilesReviewed').toggleClass('selected', options.bShowFilesReviewed);
+			$html.find('#btnShowFilesUnreviewed').toggleClass('selected', options.bShowFilesUnreviewed);
+			$html.find('#btnShowFilesCommented').toggleClass('selected', options.bShowFilesCommented);
+
+			return $('<div />').append($html).html();
 		},
 
 		buildDiffTreeFooterPanelHtml: function() {

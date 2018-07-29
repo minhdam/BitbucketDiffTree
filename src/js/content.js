@@ -42,12 +42,21 @@
 	 */
 	var _oPullRequestFileStatuses; 
 
+	var diffTreeOptions = {
+		bUseCompactMode: false,
+		bShowFilesReviewed: false, 
+		bShowFilesUnreviewed: false, 
+		bShowFilesCommented: false,
+	}
+
 	var _manifestData = chrome.runtime.getManifest();
 
 	// Get the settings
 	var _settings = {};
 	LocalStorageHelper.getAllSettings(function(settings) {
 		_settings = settings;
+
+		diffTreeOptions.bUseCompactMode = _settings.useCompactMode;
 		
 		if (canApplyDiffTree()) {
 			tryToLoadDiffTreeTool();
@@ -123,7 +132,7 @@
 			_$commitFilesSummary.hide();
 			_$diffSections.hide();
 
-			buildDiffTreeAsync(_settings.useCompactMode, function() {
+			buildDiffTreeAsync(diffTreeOptions, function() {
 				bindDiffTreeEvents();
 				showNewVersionIndicator();
 				navigateToNodeInHash();
@@ -193,6 +202,24 @@
 			expandAllFolders();
 		});
 
+		$(document).off('click', '#btnShowFilesReviewed');
+		$(document).on('click', '#btnShowFilesReviewed', function(e) {
+			e.preventDefault();
+			showFilesReviewed();
+		});
+
+		$(document).off('click', '#btnShowFilesUnreviewed');
+		$(document).on('click', '#btnShowFilesUnreviewed', function(e) {
+			e.preventDefault();
+			showFilesUnreviewed();
+		});
+
+		$(document).off('click', '#btnShowFilesCommented');
+		$(document).on('click', '#btnShowFilesCommented', function(e) {
+			e.preventDefault();
+			showFilesCommented();
+		});
+
 		$(document).off('click', '.reviewed-checkbox');
 		$(document).on('click', '.reviewed-checkbox', function(e) {
 			e.preventDefault();
@@ -232,7 +259,9 @@
 		var useCompactMode = _settings.useCompactMode || false;
 		useCompactMode = !useCompactMode;
 
-		buildDiffTreeAsync(useCompactMode);
+		diffTreeOptions.bUseCompactMode = useCompactMode;
+
+		buildDiffTreeAsync(diffTreeOptions);
 		saveCompactModeSetting(useCompactMode);
 
 		var title = useCompactMode ? 'Uncompact empty folders' : 'Compact empty folders';
@@ -356,21 +385,20 @@
 		}
 	}
 
-	function buildDiffTreeAsync(bIsCompactMode, fnCallback) {
-		bIsCompactMode = bIsCompactMode || false;
-		
+	function buildDiffTreeAsync(options, fnCallback) {		
 		LocalStorageHelper.getPullRequestStatus(_oPullRequestModel, function(data) {
 			_oPullRequestFileStatuses = data;
 			_treeObject = populateDiffTreeObject();
 
-			if (bIsCompactMode) {
+			if (options.bUseCompactMode) {
 				_treeObject = compactEmptyFoldersDiffTreeObject(_treeObject);
 			}
 			
-			attachDiffTreeHtml(_treeObject);
+			attachDiffTreeHtml(_treeObject, options);
 			initializeJsTree();
 			bindJsTreeEvents();
 			updateReviewStatusesForAllNodes();
+			filterNodes(options);
 			
 			if (fnCallback) {
 				fnCallback();
@@ -423,7 +451,7 @@
 						item.data.link = link;
 						item.data.fileStatus = getFileStatus($self);
 						item.data.commentCount = getFileCommentCount($self);
-						item.data.bIsReviewed = bIsReviewed;
+						item.data.isReviewed = bIsReviewed;
 					}
 
 					tempObject = tempObject.children[folder];
@@ -473,15 +501,14 @@
 		return treeNodeResult;
 	}
 
-	function attachDiffTreeHtml(oTreeObject) {
+	function attachDiffTreeHtml(oTreeObject, options) {
 		// Remove the current tree diff if any to prevent duplicated
 		_$pullRequestDiff.append(_$pullRequestDiffCompare);
 		$('#diffTreeWrapper').remove();
 
-
 		// Build diff tree html
 		var diffTreeContainer = '<div id="diffTreeContainer" class="expanded">';
-		diffTreeContainer += HtmlHelper.buildDiffTreeActionsPanelHtml(_settings.useCompactMode);
+		diffTreeContainer += HtmlHelper.buildDiffTreeActionsPanelHtml(options);
 
 		diffTreeContainer += '<div id="treeDiff">';
 		diffTreeContainer += HtmlHelper.buildTreeHtml(oTreeObject);
@@ -735,9 +762,70 @@
 
 	function setNodeReviewStatus($node, bIsReviewed) {
 		$node.toggleClass('isReviewed', bIsReviewed);
+		$node.attr('data-is-reviewed', bIsReviewed);
 
 		var treeNode = _treeHelper.getNode($node);
 		treeNode.data.isReviewed = bIsReviewed;
+	}
+
+	function showFilesReviewed() {
+		$('#btnShowFilesReviewed').toggleClass('selected');
+		$('#btnShowFilesUnreviewed').removeClass('selected');
+		filter();
+	}
+
+	function showFilesUnreviewed() {
+		$('#btnShowFilesUnreviewed').toggleClass('selected');
+		$('#btnShowFilesReviewed').removeClass('selected');
+		filter();
+	}
+
+	function showFilesCommented() {
+		$('#btnShowFilesCommented').toggleClass('selected');
+		filter();
+	}
+
+	function filter() {
+		var isShowFilesReviewed = $('#btnShowFilesReviewed').hasClass('selected');
+		var isShowFilesUnreviewed = $('#btnShowFilesUnreviewed').hasClass('selected');
+		var isShowFilesCommented = $('#btnShowFilesCommented').hasClass('selected');
+
+		diffTreeOptions.bShowFilesReviewed = isShowFilesReviewed;
+		diffTreeOptions.bShowFilesUnreviewed = isShowFilesUnreviewed;
+		diffTreeOptions.bShowFilesCommented = isShowFilesCommented;
+
+		buildDiffTreeAsync(diffTreeOptions);
+	}
+
+	function filterNodes(options) {
+		if (options.bShowFilesReviewed) {
+			_treeHelper.hideNodes($('.jstree-node.isLeaf:not(.isReviewed)'));
+		}
+
+		if (options.bShowFilesUnreviewed) {
+			_treeHelper.hideNodes($('.jstree-node.isReviewed'));
+		}
+
+		if (options.bShowFilesCommented) {
+			_treeHelper.hideNodes($('.jstree-node.isLeaf:not(.hasComment)'));
+		}
+
+		if (options.bShowFilesReviewed || options.bShowFilesUnreviewed || options.bShowFilesCommented) {
+			hideEmptyFolders(_$treeDiff);
+		}
+	}
+
+	function hideEmptyFolders($liTreeNode) {
+		var $childNodes = $liTreeNode.find('> ul.jstree-children > li.jstree-node:not(.isLeaf)');
+		$childNodes.each(function() {
+			hideEmptyFolders($(this));
+		});
+
+		$liTreeNode = $('#' + $liTreeNode.attr('id')); // to reload the latest DOM status
+		var $visibleChildNodes = $liTreeNode.find('> ul.jstree-children > li.jstree-node:not(.jstree-hidden)');
+		if ($liTreeNode.hasClass('jstree-node') && $visibleChildNodes.length === 0) {
+			_treeHelper.hideNodes($liTreeNode);
+		}
 	}
 
 })(

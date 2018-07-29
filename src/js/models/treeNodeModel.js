@@ -15,7 +15,7 @@
 			fileCount: 0,
 			fileStatus: null,
 			commentCount: 0,
-			bIsReviewed: false
+			isReviewed: false
 		}
 	}
 
@@ -37,7 +37,7 @@
 			fileCount: _this.data.fileCount,
 			fileStatus: _this.data.fileStatus,
 			commentCount: _this.data.commentCount,
-			bIsReviewed: _this.data.bIsReviewed
+			isReviewed: _this.data.isReviewed
 		};
 
 		return newObject;

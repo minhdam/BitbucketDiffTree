@@ -120,6 +120,14 @@
 	display: inline-block;
 }
 
+#diffTreeWrapper #diffTreeContainer .dt-actions .dt-action-item:focus {
+	outline: 0px solid #4C9AFF;
+}
+
+#diffTreeWrapper #diffTreeContainer .dt-actions .dt-action-item.selected {
+	color: blue;
+}
+
 #diffTreeWrapper #diffTreeContainer .dt-actions #btnCompactEmptyFoldersToggle.dt-action-item {
 
 }

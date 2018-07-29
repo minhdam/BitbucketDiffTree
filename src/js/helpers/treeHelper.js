@@ -39,6 +39,44 @@
 			_$treeContainer.jstree(true).select_node(nodeId);
 		}
 
+		/**
+		 * Show an array of nodes
+		 * @param {object[]} objs	An array of node ids or node DOMs
+		 */
+		function showNodes(objs) {
+			objs.each(function() {
+				var node = getNode($(this));
+				_$treeContainer.jstree(true).show_node(node);
+			});
+		}
+
+		/**
+		 * Show all nodes
+		 */
+		function showAllNodes() {
+			_$treeContainer.jstree(true).show_all();
+			// _$treeContainer.find('.jstree-node').removeClass('jstree-hidden jstree-leaf');
+			// _$treeContainer.find('.jstree-node.isLeaf').addClass('jstree-leaf');
+		}
+
+		/**
+		 * Hide an array of nodes
+		 * @param {object[]} objs	An array of node ids or node DOMs
+		 */
+		function hideNodes(objs) {
+			objs.each(function() {
+				var node = getNode($(this));
+				_$treeContainer.jstree(true).hide_node(node);
+			});
+		}
+
+		/**
+		 * Hide all nodes
+		 */
+		function hideAllNodes() {
+			_$treeContainer.jstree(true).hide_all();
+		}
+
 		function openParentNodes(nodeId) {
 			var parentNodeId = _$treeContainer.jstree(true).get_parent(nodeId);
 			console.log('before: ' + parentNodeId);
@@ -71,13 +109,22 @@
 			_$treeContainer.jstree('close_all');
 		}
 
+		function redraw() {
+			_$treeContainer.jstree(true).redraw(true);
+		}
+
 		return {
 			getNode: getNode,
 			toggleNode: toggleNode,
 			selectNode: selectNode,
+			showNodes: showNodes,
+			showAllNodes: showAllNodes,
+			hideNodes: hideNodes,
+			hideAllNodes: hideAllNodes,
 			deselectAllNodes: deselectAllNodes,
 			expandAllNodes: expandAllNodes,
 			collapseAllNodes: collapseAllNodes,
+			redraw: redraw,
 		}
 	}
 
