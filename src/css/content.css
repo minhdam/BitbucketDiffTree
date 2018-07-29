@@ -54,6 +54,11 @@
 	line-height: 20px;
 }
 
+#diffTreeWrapper #diffTreeContainer #treeEmpty {
+	position:absolute;
+	padding:10px;
+}
+
 #diffTreeWrapper #treeDiff .fileIcon {
 	color: #4B6884;
 	cursor: pointer;

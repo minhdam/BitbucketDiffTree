@@ -20,7 +20,8 @@
 
 	var _$diffTreeWrapper,
 		_$diffTreeContainer,
-		_$treeDiff;
+		_$treeDiff,
+		_$treeEmpty;
 
 	var _newCommentObserver = new NewCommentObserver(),
 		_fileChangesObserver = new FileChangesObserver();
@@ -235,6 +236,7 @@
 		$(document).on('keyup', '#searchBox', function(e) {
 			var searchText = $(this).val();
 			_$treeDiff.jstree('search', searchText);
+			filterNodes(diffTreeOptions);
 		});
 
 		$(document).off('click', '#clearSearch');
@@ -242,6 +244,12 @@
 			_$treeDiff.jstree('clear_search');
 			$('#searchBox').val('').focus();
 		});
+
+		$(document).off('click', '#clearFilter');
+		$(document).on('click', '#clearFilter', function(e) {
+			e.preventDefault();
+			clearFilter();
+		})
 	}
 
 	function minimizeDiffTree() {
@@ -510,6 +518,7 @@
 		var diffTreeContainer = '<div id="diffTreeContainer" class="expanded">';
 		diffTreeContainer += HtmlHelper.buildDiffTreeActionsPanelHtml(options);
 
+		diffTreeContainer += '<div id="treeEmpty" class="hidden">No files found. <a id="clearFilter" href="javascript:void(0)">Clear filter.</a></div>';
 		diffTreeContainer += '<div id="treeDiff">';
 		diffTreeContainer += HtmlHelper.buildTreeHtml(oTreeObject);
 		diffTreeContainer += '</div>'; // end of #treeDiff
@@ -529,8 +538,9 @@
 		
 		_$pullRequestDiffCompare.addClass('diff-tree-aside');
 		_$diffTreeWrapper = $('#diffTreeWrapper');
-		_$diffTreeContainer = $('#diffTreeContainer');
-		_$treeDiff = $('#treeDiff');
+		_$diffTreeContainer = _$diffTreeWrapper.find('#diffTreeContainer');
+		_$treeDiff = _$diffTreeWrapper.find('#treeDiff');
+		_$treeEmpty = _$diffTreeWrapper.find('#treeEmpty');
 
 		_treeHelper = new TreeHelper(_$treeDiff);
 
@@ -813,6 +823,9 @@
 		if (options.bShowFilesReviewed || options.bShowFilesUnreviewed || options.bShowFilesCommented) {
 			hideEmptyFolders(_$treeDiff);
 		}
+
+		var isTreeEmpty = _$treeDiff.find('.jstree-node:not(.jstree-hidden)').length === 0;
+		_$treeEmpty.toggleClass('hidden', !isTreeEmpty);
 	}
 
 	function hideEmptyFolders($liTreeNode) {
@@ -826,6 +839,13 @@
 		if ($liTreeNode.hasClass('jstree-node') && $visibleChildNodes.length === 0) {
 			_treeHelper.hideNodes($liTreeNode);
 		}
+	}
+
+	function clearFilter() {
+		diffTreeOptions.bShowFilesReviewed = false;
+		diffTreeOptions.bShowFilesUnreviewed = false;
+		diffTreeOptions.bShowFilesCommented = false;
+		buildDiffTreeAsync(diffTreeOptions);
 	}
 
 })(
