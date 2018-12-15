@@ -177,7 +177,7 @@
 	flex: 0 0 auto;
 	width: 400px;
 	min-height: 200px;
-	min-width: 200px;
+	min-width: 32px;
 	max-width: 50%;
 	white-space: nowrap;
 }
@@ -213,7 +213,7 @@
 	flex: 1 1 auto;
 	width: 100%;
 	min-height: 200px;
-	min-width: 200px;
+	min-width: 32px;
 	padding-left: 0 !important;
 }
 
