@@ -100,15 +100,15 @@
 
 	function tryToLoadDiffTreeTool() {
 		if (_settings.enableAlways) {
-			_interval = setInterval(enableDiffTreeOnLoad, 500);
+			_interval = setInterval(enableDiffTreeOnLoad, 50);
 		} else {
-			_interval = setInterval(disableDiffTreeOnLoad, 500);
+			_interval = setInterval(disableDiffTreeOnLoad, 50);
 		}
 
-		// Force clear the _interval after 20 seconds to prevent infinite running
+		// Force clear the _interval after 12 seconds to prevent infinite running
 		setTimeout(function() {
 			clearInterval(_interval);
-		}, 20000);
+		}, 12000);
 	}
 
 	function enableDiffTreeOnLoad() {
