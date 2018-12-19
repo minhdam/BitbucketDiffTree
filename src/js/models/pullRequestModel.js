@@ -1,5 +1,5 @@
 (function(){
-	'use trict';
+	'use strict';
 	
 	var PullRequestModel = function() {
 		var _this = this;
@@ -9,7 +9,7 @@
 		_this.repoFullSlug = null;
 	}
 
-	// Export via namespace
+	// Export via name-space
 	BDT.Models.PullRequestModel = PullRequestModel;
 
 })();
