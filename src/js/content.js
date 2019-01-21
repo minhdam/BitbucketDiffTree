@@ -572,6 +572,21 @@
 				_settings.diffTreeHeight = height;
 			}
 		});
+
+		$(window).scroll(function() { 
+			let topSpacing = 25;
+    		var el = document.getElementById("diffTreeContainer");
+
+    		var viewportOffset = el.getBoundingClientRect();
+			var top = viewportOffset.top;
+
+			if(top <= topSpacing){
+				var offset = (top * -1) + topSpacing;
+				el.style.paddingTop = offset + "px";
+			}else{
+				el.style.paddingTop = "0px";
+			}
+		});
 	}
 
 	function initializeJsTree() {
