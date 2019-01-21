@@ -100,15 +100,15 @@
 
 	function tryToLoadDiffTreeTool() {
 		if (_settings.enableAlways) {
-			_interval = setInterval(enableDiffTreeOnLoad, 500);
+			_interval = setInterval(enableDiffTreeOnLoad, 50);
 		} else {
-			_interval = setInterval(disableDiffTreeOnLoad, 500);
+			_interval = setInterval(disableDiffTreeOnLoad, 50);
 		}
 
-		// Force clear the _interval after 20 seconds to prevent infinite running
+		// Force clear the _interval after 12 seconds to prevent infinite running
 		setTimeout(function() {
 			clearInterval(_interval);
-		}, 20000);
+		}, 12000);
 	}
 
 	function enableDiffTreeOnLoad() {
@@ -570,6 +570,21 @@
 				var height = _$treeDiff.height();
 				LocalStorageHelper.setDiffTreeHeight(height);
 				_settings.diffTreeHeight = height;
+			}
+		});
+
+		$(window).scroll(function() { 
+			let topSpacing = 25;
+    		var el = document.getElementById("diffTreeContainer");
+
+    		var viewportOffset = el.getBoundingClientRect();
+			var top = viewportOffset.top;
+
+			if(top <= topSpacing){
+				var offset = (top * -1) + topSpacing;
+				el.style.paddingTop = offset + "px";
+			}else{
+				el.style.paddingTop = "0px";
 			}
 		});
 	}

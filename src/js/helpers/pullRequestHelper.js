@@ -11,7 +11,6 @@
 
 			var pullRequestModel = new PullRequestModel();
 			pullRequestModel.userId = oCurrentUser.uuid;
-			pullRequestModel.pullRequestId = oCurrentPr.localId;
 			pullRequestModel.repoFullSlug = oCurrentRepo.fullslug;
 
 			return pullRequestModel;
