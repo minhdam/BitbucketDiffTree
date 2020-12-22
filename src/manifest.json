@@ -1,7 +1,7 @@
 {
 	"name": "Bitbucket Diff Tree",
 	"description": "Extension to display diff tree for Bitbucket",
-	"version": "1.7",
+	"version": "1.8.0",
 	"manifest_version": 2,
 
 	"background": {
@@ -14,8 +14,11 @@
 	},
 
 	"permissions": [
+		"storage"
+	],
+
+	"optional_permissions": [ 
 		"tabs",
-		"storage",
 		"https://bitbucket.org/*"
 	],
 

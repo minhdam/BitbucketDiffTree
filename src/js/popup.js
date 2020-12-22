@@ -29,28 +29,48 @@
 		});
 
 	function enableDiffTree() {
-		chrome.tabs.query(
-			{
-				active: true,
-				currentWindow: true
-			},
-			function(tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, { from: 'popup', action: "enableDiffTree" });
-
-				window.close();
-			});
+		grantPermissions(function() {
+			chrome.tabs.query(
+				{
+					active: true,
+					currentWindow: true
+				},
+				function(tabs) {
+					chrome.tabs.sendMessage(tabs[0].id, { from: 'popup', action: "enableDiffTree" });
+	
+					window.close();
+				});
+		});
 	}
 
 	function disableDiffTree() {
-		chrome.tabs.query(
-			{
-				active: true,
-				currentWindow: true
-			},
-			function(tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, { from: 'popup', action: "disableDiffTree" });
+		grantPermissions(function() {
+			chrome.tabs.query(
+				{
+					active: true,
+					currentWindow: true
+				},
+				function(tabs) {
+					chrome.tabs.sendMessage(tabs[0].id, { from: 'popup', action: "disableDiffTree" });
+	
+					window.close();
+				});
+		});
+	}
 
-				window.close();
-			});
+	function grantPermissions(fnCallback) {
+		// Permissions must be requested from inside a user gesture, like a button's
+		// click handler.
+		chrome.permissions.request({
+			permissions: ['tabs'],
+			origins: ['https://bitbucket.org/*']
+		}, function(granted) {
+			// The callback argument will be true if the user granted the permissions.
+			if (granted) {
+				fnCallback();
+			} else {
+				alert('Please grant "tabs" permission to use this chrome extension.');
+			}
+		});
 	}
 })();

@@ -48,6 +48,10 @@ Chrome extension to display diff tree for Bitbucket. It will bring the DiffTree 
 ### v1.7
 * Allow filtering files by review, unreview and comment status
 
+### v1.8.0
+* Grant "tabs" permission when needed to comply with Google Chrome "Use of permissions" policy
+https://developer.chrome.com/webstore/program_policies#permissions
+
 ## How to install
 - Chrome webstore: https://chrome.google.com/webstore/detail/bitbucket-diff-tree/pgpjdkejablgneeocagbncanfihkebpf
 

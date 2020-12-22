@@ -10,9 +10,13 @@
 			var oCurrentPr = $body.data('current-pr');
 
 			var pullRequestModel = new PullRequestModel();
-			pullRequestModel.userId = oCurrentUser.uuid;
-			pullRequestModel.pullRequestId = oCurrentPr.localId;
-			pullRequestModel.repoFullSlug = oCurrentRepo.fullslug;
+
+			try {
+				pullRequestModel.userId = oCurrentUser.uuid;
+				pullRequestModel.pullRequestId = oCurrentPr.localId;
+				pullRequestModel.repoFullSlug = oCurrentRepo.fullslug;
+			} catch {
+			}
 
 			return pullRequestModel;
 		},
